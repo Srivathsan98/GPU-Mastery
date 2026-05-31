@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPU & Graphics Mastery — Roadmap & Question Bank</title>
+<style>
+:root{--bg:#0a0c10;--bg2:#111418;--bg3:#181d24;--bg4:#1e2530;--border:#252e3d;--border2:#2e3d52;--text:#dde4f0;--muted:#6b7a99;--dim:#3d4d66;--gpu:#a78bfa;--blue:#60a5fa;--green:#4ade80;--amber:#fbbf24;--red:#f87171;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono','Fira Code',monospace}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:32px 24px 24px;text-align:center}
+.hero-tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--gpu);text-transform:uppercase;margin-bottom:8px}
+.hero h1{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text);margin-bottom:6px}
+.hero-sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+.hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:20px}
+.stat{text-align:center}.stat-val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--gpu)}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:.05em}
+.overall-bar{max-width:480px;margin:0 auto 8px;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.overall-fill{height:100%;background:linear-gradient(90deg,#7c3aed,var(--gpu));border-radius:4px;transition:width .5s}
+.overall-label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.sources-note{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:8px 16px;max-width:660px;margin:10px auto 0;font-size:11px;color:var(--muted);font-family:var(--mono)}
+.phase-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.phase-btn{font-family:var(--mono);font-size:11px;padding:5px 14px;border:1px solid var(--border2);border-radius:4px;background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s}
+.phase-btn:hover{color:var(--text);border-color:var(--muted)}
+.phase-btn.active{color:var(--gpu);border-color:var(--gpu);background:rgba(167,139,250,.07)}
+.module-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:6px;flex-wrap:wrap}
+.mod-btn{font-family:var(--mono);font-size:10px;padding:4px 10px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--dim);cursor:pointer;transition:all .15s}
+.mod-btn:hover{color:var(--muted);border-color:var(--border2)}
+.mod-btn.done{border-color:var(--green);color:var(--green)}
+.mod-btn.partial{border-color:var(--amber);color:var(--amber)}
+.content{max-width:1100px;margin:0 auto;padding:24px}
+.phase-header{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--gpu);text-transform:uppercase;padding:16px 0 8px;margin-top:8px}
+.module{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden}
+.module-head{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;user-select:none;transition:background .15s}
+.module-head:hover{background:var(--bg3)}
+.module-num{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--dim);width:32px;flex-shrink:0}
+.module-icon{font-size:20px;flex-shrink:0}
+.module-info{flex:1}.module-title{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text)}
+.module-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.module-right{text-align:right;flex-shrink:0}
+.mod-count{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mod-badge{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;margin-top:3px;display:inline-block}
+.badge-ns{background:rgba(61,77,102,.4);color:var(--dim)}
+.badge-ip{background:rgba(251,191,36,.1);color:var(--amber)}
+.badge-done{background:rgba(74,222,128,.1);color:var(--green)}
+.module-chevron{color:var(--dim);font-size:11px;transition:transform .2s;flex-shrink:0}
+.module.open .module-chevron{transform:rotate(90deg)}
+.mod-bar{height:3px;background:var(--bg4);margin:0 20px}
+.mod-bar-fill{height:100%;background:var(--gpu);transition:width .4s}
+.module.open .mod-bar{display:none}
+.module-body{display:none;border-top:1px solid var(--border)}
+.module.open .module-body{display:block}
+.q-table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--bg3)}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th:first-child{width:42px;text-align:center}th:nth-child(2){width:44px}
+th:nth-child(4){width:80px}th:nth-child(5){width:90px}th:last-child{width:80px}
+tbody tr{border-bottom:1px solid rgba(37,46,61,.6);transition:background .1s;cursor:pointer}
+tbody tr:hover{background:rgba(167,139,250,.03)}
+tbody tr.checked{opacity:.45}tbody tr:last-child{border-bottom:none}
+td{padding:9px 12px;font-size:13px;vertical-align:middle}td:first-child{text-align:center}
+.cb{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;display:inline-flex;align-items:center;justify-content:center}
+tr.checked .cb{background:var(--gpu);border-color:var(--gpu)}
+.cb-check{display:none;font-size:10px;font-weight:800;color:var(--bg)}
+tr.checked .cb-check{display:block}
+.q-num{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.q-text{color:var(--text);line-height:1.5}tr.checked .q-text{text-decoration:line-through;color:var(--dim)}
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.04em}
+.tag-theory{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+.tag-code{background:rgba(167,139,250,.12);color:var(--gpu);border:1px solid rgba(167,139,250,.25)}
+.tag-debug{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.diff{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:700;letter-spacing:.04em}
+.diff-B{background:rgba(74,222,128,.1);color:var(--green)}
+.diff-I{background:rgba(251,191,36,.1);color:var(--amber)}
+.diff-A{background:rgba(248,113,113,.1);color:var(--red)}
+.issue-input{width:52px;font-family:var(--mono);font-size:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;color:var(--muted);padding:2px 5px;outline:none}
+.issue-input:focus{border-color:var(--gpu);color:var(--text)}
+.issue-open{display:block;font-family:var(--mono);font-size:9px;color:var(--dim);text-decoration:none;margin-top:2px}
+.issue-open.active{color:var(--blue)}.issue-open.active:hover{text-decoration:underline}
+td.issue-cell{font-size:11px}
+.mod-stats{display:flex;gap:20px;padding:12px 20px;background:var(--bg3);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.ms{color:var(--muted)}.ms span{font-family:var(--mono);color:var(--gpu);font-weight:700}
+.mod-prog-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:6px;align-self:center;min-width:80px}
+.mod-prog-fill{height:100%;background:var(--gpu);border-radius:3px;transition:width .4s}
+.footer{text-align:center;padding:32px;font-family:var(--mono);font-size:11px;color:var(--dim);border-top:1px solid var(--border);margin-top:32px}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-tag">// complete mastery path</div>
+  <h1>GPU & GRAPHICS MASTERY</h1>
+  <div class="hero-sub">GPU ARCH → OpenGL → Vulkan → OpenCL → CUDA → GLSL/HLSL → Compute → Profiling · 30 MODULES</div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-val" id="s-modules">30</div><div class="stat-label">Modules</div></div>
+    <div class="stat"><div class="stat-val" id="s-total">0</div><div class="stat-label">Questions</div></div>
+    <div class="stat"><div class="stat-val">3</div><div class="stat-label">Phases</div></div>
+    <div class="stat"><div class="stat-val">∞</div><div class="stat-label">Render loops</div></div>
+  </div>
+  <div style="color:var(--muted);font-size:12px;margin-bottom:16px">
+    Phase 1 — GPU Architecture & OpenGL · Phase 2 — Vulkan, OpenCL & GLSL · Phase 3 — Advanced Compute, CUDA, Profiling & Real-time Rendering
+  </div>
+  <div class="overall-bar"><div class="overall-fill" id="overall-fill" style="width:0%"></div></div>
+  <div class="overall-label">
+    <b id="done-count">0</b> / <b id="total-count">0</b> questions done &nbsp;
+    <b id="pct-label">0%</b> overall &nbsp;
+    <b id="mod-done">0</b> / 30 modules complete
+  </div>
+  <div class="sources-note">Sources: RTR4 · Vulkan Spec · OpenGL SuperBible · Programming MPP · GPU Gems · The Book of Shaders · Khronos Specs · NVIDIA Dev Blog</div>
+</div>
+<nav class="phase-nav">
+  <button class="phase-btn active" onclick="filterPhase(0)">All phases</button>
+  <button class="phase-btn" onclick="filterPhase(1)">Phase 01 · GPU Architecture &amp; OpenGL</button>
+  <button class="phase-btn" onclick="filterPhase(2)">Phase 02 · Vulkan, OpenCL &amp; Shaders</button>
+  <button class="phase-btn" onclick="filterPhase(3)">Phase 03 · Advanced Compute &amp; Real-Time Rendering</button>
+</nav>
+<div class="module-nav" id="mod-nav"></div>
+<div class="content" id="content"></div>
+<div class="footer">GPU MASTERY · 30 MODULES · VERTEX. FRAGMENT. DISPATCH. PRESENT.</div>
+<script>
+const MODULES = [
+{id:'m01',phase:1,num:'01',icon:'🏗️',title:'GPU Architecture — Hardware Fundamentals',desc:'SM/CU, SIMT, warps, register file, shared memory, L1/L2/HBM, tensor cores, RT cores, NVLink.',qs:[
+['What is the fundamental design philosophy difference between GPU and CPU? Why is GPU optimized for throughput over latency?','T','B'],
+['What is a Streaming Multiprocessor (SM) on NVIDIA GPUs? How many CUDA cores, warp schedulers, and shared memory banks does a modern SM have?','T','B'],
+['What is SIMT (Single Instruction Multiple Thread)? How does it differ from SIMD and what advantage does it have for GPU programming?','T','B'],
+['What is a warp (NVIDIA) / wavefront (AMD)? What is the warp size (32 on NVIDIA, 64 on AMD) and why does it matter for performance?','T','B'],
+['What is warp divergence? Give a concrete C/CUDA example of a kernel where divergence occurs and explain the performance impact.','T','B'],
+['What is the GPU register file? How does each SM have a large register file (e.g., 65536 registers on Ampere) and how does register usage affect occupancy?','T','I'],
+['What is GPU shared memory? How does it differ from L1 cache, what is its latency, and when should a programmer use it explicitly?','T','B'],
+['What is the GPU memory hierarchy: register file, L1/shared, L2, global (GDDR6/HBM)? Give approximate latency and bandwidth at each level.','T','B'],
+['What is GPU occupancy? How is it defined (ratio of active warps to max warps per SM) and what factors limit it: registers, shared memory, block size?','T','I'],
+['What are tensor cores? How do they compute matrix multiply-accumulate (D=A*B+C) for FP16/BF16/INT8 and what is their throughput compared to CUDA cores?','T','I'],
+['Write a CUDA kernel that explicitly uses shared memory to implement a tiled matrix multiply. Show how to load a tile, synchronize with __syncthreads(), compute the partial product, and advance the tile.','C','I'],
+['Write a CUDA benchmark that measures the bandwidth of each memory level: read from L1 (repeated reads from small array), L2, and global memory. Plot bandwidth vs working set size.','C','I'],
+['Write two CUDA kernels for parallel reduction: one with warp divergence (naive if-else per thread) and one warp-divergence-free. Benchmark both and explain the speedup.','C','I'],
+['Write a CUDA kernel that fills a 1024x1024 float matrix using 2D thread blocks. Measure occupancy using nvcc --ptxas-options=-v and NVIDIA Nsight Compute.','C','B'],
+['Write a CUDA program that measures warp occupancy for varying register usage: compile the same kernel with __launch_bounds__(128, 4) and without. Compare active warps per SM.','C','A'],
+['Use nvidia-smi and nvml (NVIDIA Management Library) to poll GPU temperature, power draw, memory used, and utilization at 1Hz while running a workload.','C','B'],
+['What is NVLink? How does NVLink 4.0 provide 900 GB/s GPU-GPU bandwidth vs 64 GB/s for PCIe 5.0 x16 and what workloads benefit?','T','I'],
+['What are RT Cores on NVIDIA GPUs? How do they accelerate BVH traversal and ray-triangle intersection for real-time ray tracing?','T','I'],
+['What is the difference between GDDR6 and HBM2e/HBM3? Compare bandwidth, latency, power, and physical integration.','T','I'],
+['Design a GPU workload profiling plan for a new CUDA application: specify which Nsight counters to collect first, what bottleneck hypothesis they confirm, and what optimizations to try in order.','T','A']
+]},
+{id:'m02',phase:1,num:'02',icon:'🟩',title:'OpenGL — Core Profile & Modern Pipeline',desc:'VAO/VBO, shader programs, uniforms, textures, framebuffers, depth test, blending, instancing.',qs:[
+['What is the OpenGL core profile vs compatibility profile? Why should new code use core profile?','T','B'],
+['What is a VAO (Vertex Array Object)? What state does it capture: vertex attribute pointers, VBO bindings, and index buffer binding?','T','B'],
+['What is a VBO (Vertex Buffer Object)? Write the OpenGL code to create a VBO, upload vertex data (position + color interleaved), and describe the memory layout.','C','B'],
+['Write a complete minimal OpenGL program (GLFW + GLAD) that: creates a window, compiles a vertex and fragment shader, uploads a triangle, and renders it in the render loop.','C','B'],
+['Write an OpenGL shader pair in GLSL: vertex shader reads position and UV from layout location 0 and 1, passes UV to fragment shader as flat varying, fragment shader outputs a solid color.','C','B'],
+['What is a uniform variable in GLSL? Write code to set a mat4 MVP (model-view-projection) matrix uniform and a float time uniform from the CPU side.','C','B'],
+['Write an OpenGL textured quad renderer: load a PNG with stb_image, create a GL_TEXTURE_2D, set wrap/filter parameters (GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR), generate mipmaps, and render the quad.','C','B'],
+['What is a framebuffer object (FBO)? Write the code to create an FBO with a color attachment (GL_TEXTURE_2D) and a depth-stencil renderbuffer. Render a scene to it, then blit it to the default framebuffer.','C','I'],
+['What is depth testing? How does glDepthFunc(GL_LESS) prevent overdraw and what is z-fighting and how do you fix it?','T','B'],
+['What is alpha blending? Write the glBlendFunc call for standard pre-multiplied alpha blending and explain why render order matters for transparent objects.','T','B'],
+['Write an OpenGL instanced rendering program: draw 10000 cubes each with a different model matrix using glDrawElementsInstanced() and a per-instance mat4 attribute updated via glVertexAttribDivisor(1,1).','C','I'],
+['Write an OpenGL geometry shader that takes GL_POINTS input and emits billboard quads (4 vertices) facing the camera for each point. Output UV coordinates for the fragment shader.','C','I'],
+['What is a Uniform Buffer Object (UBO)? Write the GLSL layout(std140) block and the C++ code to create the UBO, map it, write data, and bind it to binding point 0.','C','I'],
+['Write an OpenGL SSBO (Shader Storage Buffer Object) compute-shader pipeline that reads an input float array, multiplies each element by 2, and writes to an output SSBO. Dispatch and read results back.','C','I'],
+['What is a transform feedback in OpenGL? Write a vertex shader that outputs gl_Position and a computed velocity, sets up transform feedback varyings, and captures the output to a VBO.','C','A'],
+['Write an OpenGL multi-pass renderer: pass 1 renders scene geometry to a G-buffer (position, normal, albedo as 3 FBOs), pass 2 reads the G-buffer in a fullscreen quad fragment shader and computes Phong lighting.','C','A'],
+['What is face culling in OpenGL? How does GL_CCW winding order define front faces and when should you disable culling?','T','B'],
+['What is scissor testing? How does glScissor(x, y, w, h) restrict rendering to a screen rectangle and what is it used for (UI, shadow atlas)?','T','B'],
+['What is a stencil buffer? Write the OpenGL setup for stencil-based outlining: render the object normally, then scale it slightly and render with inverted stencil to draw only the outline pixels.','C','I'],
+['Debug an OpenGL program that renders a black screen: list 10 common causes and show how you would use GL_ARB_debug_output (glDebugMessageCallback) to catch driver-level errors automatically.','C','I']
+]},
+{id:'m03',phase:1,num:'03',icon:'🔷',title:'GLSL — Vertex & Fragment Shaders',desc:'GLSL types, built-ins, math, lighting models, normal mapping, shadow maps, post-processing.',qs:[
+['What are the GLSL built-in types: vec2, vec3, vec4, mat3, mat4, sampler2D, samplerCube? What swizzling operations are available (.xyzw, .rgba, .stpq)?','T','B'],
+['Write a GLSL vertex shader that: reads position (vec3), normal (vec3), and UV (vec2), transforms position with a MVP matrix, outputs world-space normal and UV to the fragment shader.','C','B'],
+['Write a GLSL fragment shader implementing Blinn-Phong lighting: ambient + diffuse (N·L) + specular (N·H). Accept a vec3 lightDir, lightColor, and cameraPos as uniforms.','C','B'],
+['Write a GLSL normal mapping shader: unpack a normal from a tangent-space normal map texture, build the TBN matrix (tangent, bitangent, normal) from vertex attributes, and transform the normal to world space.','C','I'],
+['Write a GLSL shadow map implementation: pass 1 renders depth from the light s perspective to a depth texture; pass 2 samples the depth texture, applies bias, and computes whether the fragment is in shadow.','C','I'],
+['Write a GLSL PCF (Percentage Closer Filtering) shadow: sample a 3x3 Poisson disk kernel around the shadow map coordinate and average the shadow factor.','C','I'],
+['Write a GLSL post-processing fragment shader for bloom: threshold pass (discard pixels below brightness), gaussian blur (2-pass, horizontal + vertical), and additive combine.','C','I'],
+['Write a GLSL PBR (Physically Based Rendering) fragment shader: implement the Cook-Torrance BRDF with GGX NDF, Smith G2, and Fresnel-Schlick approximation for roughness and metallic inputs.','C','A'],
+['Write a GLSL screen-space ambient occlusion (SSAO) pass: sample hemisphere around the fragment in view space from the G-buffer depth, compute occlusion, blur the result.','C','A'],
+['Write a GLSL compute shader (layout(local_size_x=16, local_size_y=16)) that downsamples a texture 2x using bilinear averaging via imageLoad/imageStore.','C','I'],
+['What is the difference between GLSL gl_FragDepth and the default depth write? When would you override the depth value in a fragment shader?','T','I'],
+['Write a GLSL vertex shader for skinned mesh animation: accept per-vertex bone indices (ivec4) and weights (vec4), sample a bone matrix texture array, and compute the skinned position.','C','A'],
+['What are GLSL precision qualifiers (lowp, mediump, highp)? When do they matter (mobile/embedded OpenGL ES) and what precision should you use for positions vs colors?','T','I'],
+['Write a GLSL ray-marching volume renderer: march a ray through a 3D density field (sampled from a 3D texture), accumulate absorption and emission, and produce a final color.','C','A'],
+['Write a GLSL grass rendering shader: in the geometry shader, take each GL_POINT as a grass blade base, emit 3-4 triangles per point with wind displacement based on time and noise.','C','A'],
+['What is early depth testing (early-z)? When does the GPU test depth before the fragment shader and what disqualifies early-z (gl_FragDepth write, discard, etc.)?','T','I'],
+['Write a GLSL screen-space reflection (SSR) shader: march a reflected ray in clip space using depth buffer reprojection, and sample the color buffer when the ray hits a surface.','C','A'],
+['What is a GLSL subroutine? How does it allow dynamic dispatch of shader functions from the CPU without recompiling the shader?','T','I'],
+['Write a GLSL toon/cel shading fragment shader: quantize the N·L dot product into 3 discrete bands, add a silhouette edge detection pass using the normal map and depth discontinuity.','C','I'],
+['Debug a GLSL shader that outputs incorrect colors: describe how you would use RenderDoc to capture a frame, inspect the draw call, and view the G-buffer attachments to find the bug.','C','I']
+]},
+{id:'m04',phase:1,num:'04',icon:'🎨',title:'OpenGL — Advanced Techniques',desc:'DSA, bindless textures, sparse textures, multi-draw indirect, buffer streaming, persistent mapping.',qs:[
+['What is DSA (Direct State Access) in OpenGL 4.5? How does glCreateBuffers / glNamedBufferData differ from glGenBuffers + glBindBuffer + glBufferData in terms of clarity and performance?','T','I'],
+['Write an OpenGL 4.5 DSA program that creates a VAO, VBO, and IBO without any explicit bind calls: use glCreateVertexArrays, glCreateBuffers, glVertexArrayVertexBuffer, glVertexArrayElementBuffer.','C','I'],
+['What is persistent mapped buffer streaming? Write code that uses glBufferStorage with GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT to update a vertex buffer from the CPU every frame without stalls.','C','A'],
+['What is multi-draw indirect (MDI) in OpenGL? Write the C struct for DrawArraysIndirectCommand, fill a buffer with 10000 draw commands, and call glMultiDrawArraysIndirect in a single call.','C','A'],
+['What is a bindless texture in NV_bindless_texture? Write the code to get a texture handle with glGetTextureHandleARB, make it resident, pass the uvec2 handle to a GLSL shader, and sample it.','C','A'],
+['What is GPU-driven rendering? How does the GPU generate the draw commands itself (using a compute shader) so the CPU only submits one draw call regardless of scene complexity?','T','A'],
+['Write a GPU frustum culling compute shader: for each of 10000 bounding spheres, test against the 6 frustum planes (passed as a UBO), and write the surviving draw commands to a multi-draw indirect buffer.','C','A'],
+['What is a sparse texture (ARB_sparse_texture)? How does it allow allocating a huge virtual texture address space and committing only the needed physical pages (used for streaming terrain)?','T','A'],
+['What is a pixel buffer object (PBO)? Write code to asynchronously download a framebuffer to CPU memory using two alternating PBOs (double-buffered readback) without stalling the GPU.','C','I'],
+['What is GL_NV_mesh_shader? How do mesh shaders replace the vertex+geometry pipeline with task and mesh stages that run on the GPU and what flexibility do they add?','T','A'],
+['Write an OpenGL timer query benchmark: use glBeginQuery(GL_TIME_ELAPSED) and glGetQueryObjectui64v to measure the GPU time for a draw call. Run multiple frames and average.','C','I'],
+['What is the difference between glFlush and glFinish? When does each return and when would you call each?','T','B'],
+['Write an OpenGL buffer orphaning technique: call glBufferData(target, size, nullptr, GL_STREAM_DRAW) before glBufferSubData each frame to prevent CPU-GPU sync stalls.','C','I'],
+['What is a sync object in OpenGL? Write code to insert a GLsync fence after a compute dispatch and use glClientWaitSync to block on the CPU until the GPU has finished.','C','I'],
+['Write an OpenGL tile-based deferred shading pass: divide the screen into 16x16 tiles in a compute shader, cull lights per tile using the G-buffer depth bounds, and shade only relevant lights.','C','A'],
+['What is GL_ARB_shader_image_load_store? Write a compute shader that reads a texture, applies a box blur via imageLoad/imageStore, and uses memoryBarrierImage() before reading back.','C','A'],
+['What is a clipmap for terrain rendering? How does it use concentric rings of geometry and textures at decreasing resolution toward the horizon?','T','A'],
+['What is the difference between glBufferData (orphan), glBufferSubData (partial update), and glMapBufferRange (mapped range)? When is each fastest?','T','I'],
+['Write an OpenGL 4.6 SPIR-V pipeline: compile a GLSL shader to SPIR-V with glslangValidator, load it with glShaderBinary + GL_SHADER_BINARY_FORMAT_SPIR_V, and specialize with glSpecializeShader.','C','A'],
+['Write a deferred decal rendering system in OpenGL: render a full-screen quad for each decal, reconstruct world position from depth, test the decal AABB, and blend decal albedo/normal into the G-buffer.','C','A']
+]},
+{id:'m05',phase:1,num:'05',icon:'🌍',title:'3D Math & Rendering Fundamentals',desc:'Vectors, matrices, quaternions, MVP, frustum, raycast, coordinate spaces, projection, culling.',qs:[
+['Implement a vec3 and mat4 library in C (no external dependencies): add, subtract, dot, cross, normalize, matrix multiply, transpose, and determinant.','C','B'],
+['Implement a perspective projection matrix from scratch: given FoV, aspect ratio, near, and far planes, derive the 4x4 matrix and verify it matches glm::perspective output.','C','B'],
+['Implement a lookAt view matrix from scratch: given eye, center, and up vectors, compute the right/up/forward basis and build the view matrix. Verify vs glm::lookAt.','C','B'],
+['What is model space, world space, view space, clip space, and NDC space? Walk a vertex from object-local coordinates through each transformation stage to window pixels.','T','B'],
+['Implement a quaternion library: multiplication, conjugate, normalize, slerp, and conversion to/from axis-angle and rotation matrix.','C','I'],
+['Implement frustum culling for a sphere: extract the 6 frustum planes from the VP matrix, test the sphere center against each plane with the signed distance formula.','C','I'],
+['Implement a ray-AABB intersection test (slab method): given a ray origin and direction and an AABB (min, max), return the t-interval of intersection or miss.','C','I'],
+['Implement a BVH (Bounding Volume Hierarchy) builder in C: recursively split an array of triangle AABBs along the longest axis, build a binary tree, and traverse it for ray intersection.','C','A'],
+['What is the difference between row-major and column-major matrix storage? How does this affect how matrix-vector multiplication is written in GLSL vs HLSL vs CUDA?','T','I'],
+['Implement model matrix composition: given a position, quaternion rotation, and scale, build the TRS matrix (T * R * S) and verify the order matches GLM.','C','B'],
+['What is screen-space vs world-space vs view-space? Implement the unprojection of a screen-space mouse click into a world-space ray for mouse picking.','C','I'],
+['Implement a simple rasterizer in CPU C: for a triangle with 3 vertices, compute the bounding box, iterate over pixels, use barycentric coordinates to test coverage, and interpolate a UV.','C','I'],
+['What is the difference between orthographic and perspective projection? Write both projection matrices and explain where each is used.','T','B'],
+['Implement mipmapping math: given a UV gradient (dUV/dx, dUV/dy), compute the LOD (level-of-detail) using the formula: LOD = log2(max(|du/dx|, |dv/dy|) * textureSize).','C','I'],
+['Implement a spline interpolation (Catmull-Rom) for camera path animation: given 4 control points, compute the position and tangent at parameter t in [0, 1].','C','I'],
+['What is a homogeneous coordinate? Why is the w component needed for perspective division and how does it enable the representation of points at infinity?','T','B'],
+['Implement the Separating Axis Theorem (SAT) for 2D convex polygon collision detection: test all edge normals as axes and return overlap depth.','C','I'],
+['What is occlusion culling? Describe the difference between software rasterizer-based occlusion culling and hardware occlusion queries (glBeginQuery(GL_SAMPLES_PASSED)).','T','I'],
+['Implement a simple scene graph in C++: node has local transform (position/rotation/scale), parent pointer, list of children, and a function to compute world transform by multiplying up the chain.','C','I'],
+['What is the gimbal lock problem with Euler angles? Show a rotation sequence where a degree of freedom is lost and explain why quaternions avoid this.','T','I']
+]},
+{id:'m06',phase:1,num:'06',icon:'🖼️',title:'OpenGL ES & Embedded GPU Programming',desc:'GLES 2/3, EGL, GBM, DRM, Mali/Adreno/PowerVR, tiling architectures, bandwidth optimization.',qs:[
+['What is OpenGL ES? How does GLES 2.0 / 3.0 / 3.2 differ from desktop OpenGL core in terms of available extensions, shader version, and missing features?','T','B'],
+['What is EGL? How does it replace GLX/WGL on embedded systems and how do you create an OpenGL ES context without a display server using EGL with GBM?','T','I'],
+['Write a headless OpenGL ES 3.0 program using EGL + GBM: create an EGL display from a DRM fd, choose a config, create a surface, create a context, render a triangle, and save the result with glReadPixels.','C','A'],
+['What is a tile-based deferred renderer (TBDR) used in mobile GPUs (Mali, Adreno, PowerVR)? How does it differ from immediate mode rendering and why is it bandwidth-efficient?','T','I'],
+['What is bandwidth on a mobile GPU and why is it the primary performance bottleneck? How do you minimize bandwidth: compressed textures, lower resolution rendering, reduced overdraw?','T','I'],
+['Write an OpenGL ES program that loads and renders an ETC2-compressed texture (GL_COMPRESSED_RGB8_ETC2) instead of an uncompressed texture. Measure the memory bandwidth reduction.','C','I'],
+['What are compressed texture formats for embedded: ETC2 (OpenGL ES 3.0 baseline), ASTC (Adreno/Mali/Apple), PVRTC (PowerVR)? Compare compression ratio and quality for a typical diffuse texture.','T','I'],
+['Write an OpenGL ES 3.0 instanced rendering program for a particle system: 10000 particles each with a per-instance vec4 (x, y, z, size) attribute uploaded via glVertexAttribDivisor.','C','I'],
+['What is Arm Mali GPU architecture? Describe the Triangle Setup Engine, Tiler, Shader Cores, and L2 cache and how they map to the TBDR pipeline.','T','A'],
+['Write an OpenGL ES compute shader (GLES 3.1) that counts the number of pixels above a brightness threshold in a rendered frame using atomic counters (layout(binding=0) uniform atomic_uint count).','C','A'],
+['What is EGL PbufferSurface vs WindowSurface vs PixmapSurface? When would you use a PbufferSurface for offscreen rendering?','T','I'],
+['Write a GBM + EGL + OpenGL ES example that creates a DRM dumb buffer, wraps it with GBM, renders a gradient to it, and flips it to the display using drmModeSetCrtc.','C','A'],
+['What is GLES 3.0 transform feedback? Write a particle simulation vertex shader that updates position and velocity, captures output to a transform feedback buffer, and swaps input/output buffers each frame.','C','A'],
+['What are OpenGL ES extensions for performance: EXT_texture_compression_astc, OES_draw_elements_base_vertex, KHR_debug? How do you query extension support and provide a fallback?','T','I'],
+['What is the Adreno GPU architecture? How does its UCHE (Uniform Cache and Hierarchy Engine) differ from Mali s L2 and what profiling tools (Snapdragon Profiler) does Qualcomm provide?','T','A'],
+['Write a GLES program that uses GL_EXT_shader_framebuffer_fetch to implement a simple order-independent transparency pass: fetch the current framebuffer color in the fragment shader and blend over it.','C','A'],
+['What is render pass load/store optimization for TBDR? How does glInvalidateFramebuffer (GLES 3.0) tell the driver to discard the depth/stencil tile memory, saving bandwidth?','T','I'],
+['Write a GLES 3.2 geometry instancing benchmark: draw the same mesh 1000 times with instancing vs individual draw calls. Measure CPU time and GPU time using EXT_disjoint_timer_query.','C','I'],
+['What is texture streaming on mobile? How do you prioritize which mipmap levels to keep resident when VRAM is limited (e.g., 4GB shared with CPU on a mobile SoC)?','T','I'],
+['Design a mobile GPU rendering budget: for a 60Hz game on a mid-range mobile SoC (5W GPU budget, 25 GB/s bandwidth), specify: draw calls per frame, triangle budget, texture bandwidth budget, and shadow strategy.','T','A']
+]},
+{id:'m07',phase:1,num:'07',icon:'🎯',title:'Rendering Techniques — Shadows, Lighting & Effects',desc:'Shadow maps, PCF, PCSS, IBL, deferred shading, forward+, TAA, motion blur, DOF.',qs:[
+['What is a shadow map? Describe the two-pass algorithm: render depth from the light s view, then in the main pass compare fragment depth in light space to the shadow map depth.','T','B'],
+['What is shadow map bias? What artifacts does it fix (self-shadowing acne) and what artifact does over-biasing cause (Peter Panning)? How do you choose the right bias?','T','B'],
+['Implement cascade shadow maps (CSM) in OpenGL: split the camera frustum into N cascades, render a shadow map per cascade, select the cascade in the fragment shader based on view-space depth.','C','A'],
+['What is PCF (Percentage Closer Filtering) for soft shadows? Implement a 4x4 PCF filter using a Poisson disk kernel and compare quality vs performance to a single sample.','C','I'],
+['What is PCSS (Percentage Closer Soft Shadows)? How does it vary the PCF kernel size based on the blocker search distance to simulate penumbra?','C','A'],
+['What is IBL (Image-Based Lighting)? Implement: split-sum approximation, pre-filter the environment map for specular, pre-compute the diffuse irradiance map, and sample them in a PBR fragment shader.','C','A'],
+['What is deferred shading? Implement a G-buffer with 4 render targets: world position (RGB16F), normal (RGB16F), albedo (RGB8), and metallic/roughness/AO (RGB8). Light pass reads and shades.','C','I'],
+['What is forward+ (tiled forward) rendering? How does a screen-space tile compute shader cull lights per tile before the forward pass, and what is the advantage over deferred for MSAA?','T','I'],
+['Implement TAA (Temporal Anti-Aliasing) in a fragment shader: jitter the projection matrix by a Halton sequence offset each frame, accumulate with an exponential moving average, and reject history using velocity vectors and depth.','C','A'],
+['Implement screen-space motion blur: for each fragment, read the velocity vector (from a velocity buffer), sample the color buffer along the velocity direction, and blend.','C','I'],
+['Implement depth-of-field (DoF) using a Circle of Confusion (CoC) buffer: compute CoC per-pixel from camera focus distance and aperture, apply a separable blur scaled by CoC.','C','A'],
+['What is volumetric lighting (god rays)? Implement a screen-space volumetric scatter pass: march rays from the camera toward the light, accumulate transmittance using shadow map queries.','C','A'],
+['What is FXAA (Fast Approximate Anti-Aliasing)? Implement the core algorithm in a post-process fragment shader: detect edges using luma, blend along the edge direction.','C','I'],
+['Implement LUT-based color grading: apply a 3D color lookup table (16x16x16 RGB LUT) to the final frame in a post-process pass to implement film-style color correction.','C','B'],
+['What is HBAO+ (Horizon-Based Ambient Occlusion)? How does it sample the horizon angle in screen space to compute a better AO estimate than SSAO?','T','A'],
+['Implement a lens flare system: detect bright spots in the frame, project them through the lens by reflecting over the screen center, and blend additive lens flare textures at each position.','C','I'],
+['What is a virtual shadow map (VSM or VSSM)? How does storing the moments (depth, depth²) in the shadow map enable soft shadows without PCF filtering?','T','A'],
+['Implement a simple path tracer in a GLSL compute shader: for each pixel, cast a primary ray, find the nearest triangle intersection, sample a random hemisphere direction (cosine-weighted), recurse 3 bounces.','C','A'],
+['What is Global Illumination? Compare rasterization approximations (SSGI, RSM, probe-based) vs ray tracing (DXR, Vulkan RT) in terms of accuracy and runtime cost.','T','A'],
+['Design a rendering pipeline for a photorealistic real-time architecture visualization at 60fps on a high-end GPU: specify the rendering techniques, passes, and compute budget for lighting, shadows, and post-processing.','T','A']
+]},
+{id:'m08',phase:1,num:'08',icon:'🖱️',title:'Window System Integration & Platform APIs',desc:'GLFW, SDL2, X11/Wayland, EGL, DRM/KMS, OS window system, swap chains, VSync.',qs:[
+['What is GLFW? How does it create a window with an OpenGL context, poll input events (keyboard, mouse, gamepad), and manage the event loop?','C','B'],
+['Write a GLFW program that: creates a 1280x720 window, sets the key callback to quit on ESC, uses glfwSwapInterval(1) for VSync, and renders an animated bouncing quad.','C','B'],
+['What is SDL2? How does it differ from GLFW: SDL_CreateWindow + SDL_GL_CreateContext, SDL_PollEvent loop, and SDL2 s additional modules (audio, controller, net)?','T','B'],
+['Write an SDL2 + OpenGL program that: loads a controller (SDL_GameControllerOpen), maps the left stick to a camera orbit, and renders a spinning cube.','C','I'],
+['What is DRM (Direct Rendering Manager) and KMS (Kernel Mode Setting)? How does the Linux display stack work from GPU hardware to framebuffer to display connector?','T','I'],
+['Write a raw DRM/KMS program (no X11, no Wayland): open /dev/dri/card0, find the CRTC + connector + encoder chain, create a dumb buffer, mmap it, draw a gradient, and call drmModeSetCrtc to display it.','C','A'],
+['What is GBM (Generic Buffer Management)? How does it create a gbm_bo (buffer object) that can be wrapped as an EGL image for GPU rendering and then imported into DRM for display?','T','I'],
+['What is Wayland? How does a Wayland client use the wl_compositor and wl_shell interfaces to create a surface, attach a wl_buffer, and request a frame callback for VSync?','T','I'],
+['Write a minimal Wayland client that: connects to the display, uses xdg_shell to create a toplevel window, renders a solid color via a shm buffer (wl_shm + mmap), and handles pointer events.','C','A'],
+['What is page flipping vs double buffering? How does DRM s drmModePageFlip provide tear-free display switching and how does the vblank interrupt synchronize the flip?','T','I'],
+['Write a Linux DRM/GBM/EGL + OpenGL ES render loop: create a GBM surface, wrap it as an EGL surface, render frames, and flip using drmModePageFlip with a callback.','C','A'],
+['What is VSync and adaptive sync (FreeSync/G-Sync)? How does VSync prevent tearing and what is the trade-off with latency?','T','B'],
+['What is HDR (High Dynamic Range) display output? How does the GPU signal HDR metadata to the display (EDID, HDR10, HLG) and what color space transformation is needed?','T','I'],
+['What is a swap chain? How does Vulkan s vkSwapchainKHR (or DXGI s IDXGISwapChain) manage a ring of presentable images and what determines the number of images?','T','I'],
+['What is X11 GLX? How does glXCreateContext and glXMakeCurrent attach an OpenGL context to an X11 window and how does glXSwapBuffers present the frame?','T','I'],
+['Write a libdrm atomic modesetting example: use drmModeAtomicAddProperty to configure CRTC mode, connector, and plane properties, then commit atomically with DRM_MODE_ATOMIC_ALLOW_MODESET.','C','A'],
+['What is the Mir display server and how does it compare to Wayland? What embedded platforms (Ubuntu Core, IoT) use Mir?','T','I'],
+['What is PresentMon and how does it measure frame pacing, GPU time, and display latency on Windows? What is the equivalent on Linux (drm_trace, igt_gpu_top)?','T','I'],
+['What is HDRi (High Dynamic Range Imaging) vs HDR display? How does tone mapping (ACES, Reinhard) convert HDR scene values to the display s dynamic range?','T','I'],
+['Design the display pipeline for an automotive instrument cluster: GPU -> DRM/KMS -> LVDS/DSI display, VSync at 60Hz, hardware overlay planes for gauges, and a safety-critical fallback rendering path.','T','A']
+]},
+{id:'m09',phase:2,num:'09',icon:'🔺',title:'Vulkan — Core Concepts & Instance Setup',desc:'Instance, physical device, logical device, queues, surface, swap chain, command pools, validation layers.',qs:[
+['What is the Vulkan design philosophy? Why does it provide lower overhead than OpenGL and what extra responsibility does it put on the programmer?','T','B'],
+['Write code to create a VkInstance with validation layers (VK_LAYER_KHRONOS_validation) and the VK_EXT_debug_utils extension for message callbacks.','C','B'],
+['Write code to enumerate VkPhysicalDevices, query VkPhysicalDeviceProperties (name, type, limits) and VkPhysicalDeviceMemoryProperties, and select the most suitable discrete GPU.','C','B'],
+['Write code to find a queue family that supports graphics (VK_QUEUE_GRAPHICS_BIT) and presentation (vkGetPhysicalDeviceSurfaceSupportKHR), then create a VkDevice with one queue from that family.','C','B'],
+['Write code to create a VkSurfaceKHR from a GLFW window (glfwCreateWindowSurface), query surface capabilities (vkGetPhysicalDeviceSurfaceCapabilitiesKHR), and choose a present mode (FIFO vs MAILBOX).','C','B'],
+['Write code to create a VkSwapchainKHR: choose format (VK_FORMAT_B8G8R8A8_SRGB), present mode, extent, image count, and usage (VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT). Retrieve the swapchain images.','C','B'],
+['Write code to create VkImageViews for each swapchain image with viewType=VK_IMAGE_VIEW_TYPE_2D, format matching the swapchain, and identity component mapping.','C','B'],
+['What is a VkRenderPass? Write code to create a render pass with one color attachment (LOAD_OP_CLEAR, STORE_OP_STORE) and one depth attachment (LOAD_OP_CLEAR, STORE_OP_DONT_CARE).','C','B'],
+['Write code to create VkFramebuffers for each swapchain image view, attaching it (plus the depth image view) to the render pass created above.','C','B'],
+['Write code to create a VkCommandPool and allocate VkCommandBuffers (one per swapchain image). Record: vkCmdBeginRenderPass, vkCmdBindPipeline, vkCmdDraw(3,1,0,0), vkCmdEndRenderPass.','C','B'],
+['What is the Vulkan validation layer? What categories of errors does it catch: uninitialized handles, wrong state machine order, missing synchronization, invalid resource usage?','T','B'],
+['Write a Vulkan main loop: acquire image (vkAcquireNextImageKHR), submit command buffer with wait semaphore (image available) and signal semaphore (render finished), present (vkQueuePresentKHR).','C','I'],
+['What is a VkSemaphore vs a VkFence in Vulkan? When do you use each: GPU-GPU synchronization vs CPU-GPU synchronization?','T','B'],
+['Write code to create VkSemaphores (imageAvailable, renderFinished) and VkFences (inFlightFences) for frames-in-flight. Show how to wait on the fence at the start of each frame.','C','I'],
+['What is the VkPhysicalDeviceFeatures struct? Write code to check for and enable: samplerAnisotropy, tessellationShader, geometryShader, and shaderFloat64.','C','B'],
+['What is the FIFO vs MAILBOX vs IMMEDIATE present mode in Vulkan? Which provides VSync, which provides lowest latency, and what is triple buffering?','T','I'],
+['Write code to handle swapchain recreation: detect VK_ERROR_OUT_OF_DATE_KHR from vkAcquireNextImageKHR or vkQueuePresentKHR, call vkDeviceWaitIdle, destroy and recreate the swapchain, image views, framebuffers.','C','I'],
+['What is a Vulkan extension? Write code to query available instance extensions (vkEnumerateInstanceExtensionProperties) and device extensions (vkEnumerateDeviceExtensionProperties) and enable required ones.','C','B'],
+['What is a VkPhysicalDeviceLimits? Name 5 limits relevant to rendering: maxImageDimension2D, maxUniformBufferRange, maxPushConstantsSize, minUniformBufferOffsetAlignment, maxDescriptorSetSamplers.','T','I'],
+['Debug a Vulkan program that triggers a validation error: VK_ERROR_DEVICE_LOST. List the 5 most common causes and how to narrow it down using device lost diagnostics (VK_AMD_device_coherent_memory, DRED on DX12).','T','A']
+]},
+{id:'m10',phase:2,num:'10',icon:'⚙️',title:'Vulkan — Pipeline & Shaders (SPIR-V)',desc:'Graphics pipeline, render passes, SPIR-V compilation, push constants, descriptor sets, specialization constants.',qs:[
+['What is the Vulkan graphics pipeline? List the stages: vertex input, vertex shader, tessellation, geometry shader, rasterization, fragment shader, color blending, and which are programmable vs fixed.','T','B'],
+['Write code to create a VkShaderModule from a SPIR-V binary (loaded from a .spv file). Show the VkShaderModuleCreateInfo structure.','C','B'],
+['Write code to create a complete VkPipeline: pipeline layout (empty), vertex input state (one binding, two attributes: vec2 pos + vec3 color), input assembly (TRIANGLE_LIST), viewport/scissor, rasterization (FILL, BACK_CULL), multisample (1), depth stencil, color blend (no blend).','C','I'],
+['What is a push constant in Vulkan? Write code to define a push constant range in VkPipelineLayout, push a mat4 MVP via vkCmdPushConstants, and read it in the vertex shader.','C','I'],
+['What is a VkDescriptorSetLayout? Write code to create a layout with: binding 0 = UBO (vertex stage), binding 1 = combined image sampler (fragment stage).','C','I'],
+['What is a VkDescriptorPool and VkDescriptorSet? Write code to create a pool that can allocate 10 sets with 10 UBO descriptors and 10 sampler descriptors. Allocate and write a UBO descriptor.','C','I'],
+['What is a SPIR-V shader? Write a GLSL vertex shader, compile it with glslangValidator to SPIR-V, and verify the binary with spirv-dis. Show the SPIR-V OpDecorate instructions for layout locations.','C','I'],
+['What are Vulkan specialization constants? Write code to set the local workgroup size of a compute shader at pipeline creation time using VkSpecializationMapEntry and VkSpecializationInfo.','C','I'],
+['What is a VkPipelineCache? Write code to create one, use it in vkCreateGraphicsPipelines, serialize it to disk with vkGetPipelineCacheData, and reload it on the next run.','C','I'],
+['What is dynamic state in a Vulkan pipeline? Which states can be set dynamically (viewport, scissor, line width, blend constants, depth bias) and how are they set with vkCmdSetViewport?','T','I'],
+['Write a Vulkan pipeline for rendering with depth testing: create a VkImage for depth (VK_FORMAT_D32_SFLOAT), VkImageView, allocate device memory, transition layout (UNDEFINED -> DEPTH_STENCIL_ATTACHMENT_OPTIMAL), attach to framebuffer.','C','I'],
+['What is a subpass in Vulkan? Write a render pass with two subpasses: subpass 0 writes to G-buffer attachments, subpass 1 reads them as input attachments (VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT) for deferred lighting.','C','A'],
+['Write a Vulkan pipeline for instanced rendering: add a per-instance vertex binding (binding 1, inputRate=VK_VERTEX_INPUT_RATE_INSTANCE) for a mat4 model matrix and bind it in the command buffer.','C','I'],
+['What is SPIR-V cross-compilation? How does SPIRV-Cross translate SPIR-V back to GLSL, HLSL, or MSL for cross-platform shader portability?','T','I'],
+['Write a Vulkan pipeline for wireframe rendering: set polygonMode=VK_POLYGON_MODE_LINE in VkPipelineRasterizationStateCreateInfo and enable the fillModeNonSolid feature.','C','B'],
+['What is a Vulkan pipeline derivative? How does VkGraphicsPipelineCreateInfo.basePipelineHandle allow creating a pipeline that shares state with an existing one for faster creation?','T','I'],
+['Write a Vulkan tessellation pipeline: add tessellation control and evaluation shader stages, set patchControlPoints=3 in VkPipelineTessellationStateCreateInfo, and draw with vkCmdDraw using PATCH_LIST topology.','C','A'],
+['What is Vulkan pipeline layout compatibility? Why must two pipeline layouts be compatible for descriptor sets to remain bound when switching pipelines?','T','A'],
+['Write a Vulkan multi-sample anti-aliasing (MSAA) pipeline: create color and depth attachments with VK_SAMPLE_COUNT_4_BIT, add a resolve attachment, and configure VkPipelineMultisampleStateCreateInfo.','C','I'],
+['Write a Vulkan pipeline stats query: use VkQueryPool with VK_QUERY_TYPE_PIPELINE_STATISTICS, enable vertex invocations and fragment invocations, run a draw call, and read back the counters.','C','A']
+]},
+{id:'m11',phase:2,num:'11',icon:'💾',title:'Vulkan — Memory Management',desc:'VkBuffer, VkImage, VkDeviceMemory, VMA, staging buffers, memory types, dedicated allocations, aliasing.',qs:[
+['What are Vulkan memory heaps and types? How do you interpret VkMemoryType flags: DEVICE_LOCAL, HOST_VISIBLE, HOST_COHERENT, HOST_CACHED, LAZILY_ALLOCATED?','T','I'],
+['Write the Vulkan code to create a VkBuffer (vertex buffer, size=1MB, usage=TRANSFER_DST|VERTEX_BUFFER), call vkGetBufferMemoryRequirements, find a DEVICE_LOCAL memory type, allocate VkDeviceMemory, and bind.','C','I'],
+['Write the staging buffer upload pattern in Vulkan: create a HOST_VISIBLE|HOST_COHERENT staging buffer, map it (vkMapMemory), copy vertex data, unmap, create a vkCmdCopyBuffer command to a DEVICE_LOCAL buffer.','C','I'],
+['What is VMA (Vulkan Memory Allocator)? Write code to create a VmaAllocator, allocate a vertex buffer with VMA_MEMORY_USAGE_GPU_ONLY, and a staging buffer with VMA_MEMORY_USAGE_CPU_TO_GPU.','C','I'],
+['What is memory aliasing in Vulkan? How do you alias a transient attachment (color or depth used only within a render pass) over the same VkDeviceMemory as another resource to save VRAM?','T','A'],
+['Write code to create a VkImage for a 2D texture: format VK_FORMAT_R8G8B8A8_SRGB, usage TRANSFER_DST|SAMPLED, allocate DEVICE_LOCAL memory, create a VkImageView, and create a VkSampler.','C','I'],
+['Write the Vulkan texture upload path: create a staging buffer with the pixel data, record vkCmdPipelineBarrier to transition the image from UNDEFINED to TRANSFER_DST_OPTIMAL, vkCmdCopyBufferToImage, barrier to SHADER_READ_ONLY_OPTIMAL.','C','I'],
+['What is VkMemoryRequirements.memoryTypeBits? How do you AND it with the heap flags you need (DEVICE_LOCAL) and find the lowest-index matching bit?','T','I'],
+['Write code to use vkCmdBlitImage to generate mipmaps: for each level, blit from the previous level using VK_FILTER_LINEAR, with appropriate pipeline barriers for each transition.','C','A'],
+['What is suballocation? Why does Vulkan recommend not calling vkAllocateMemory for every buffer but instead sub-allocating from a few large VkDeviceMemory blocks?','T','I'],
+['Write a VMA custom pool: create a VmaPool with a specific memory type and VMA_POOL_CREATE_IGNORE_BUFFER_IMAGE_GRANULARITY_BIT for densely packed small allocations.','C','A'],
+['What is a dedicated allocation? When does VkMemoryDedicatedRequirements recommend allocating a private VkDeviceMemory for a single resource (large images, swapchain images)?','T','I'],
+['Write code to handle VK_ERROR_OUT_OF_DEVICE_MEMORY: evict the least-recently-used texture from the texture cache, free its VkImage and VkDeviceMemory, and retry the failing allocation.','C','A'],
+['What is the Vulkan memory model for host-visible memory? When do you need vkFlushMappedMemoryRanges vs VK_MEMORY_PROPERTY_HOST_COHERENT_BIT?','T','I'],
+['Write code to create a persistently mapped buffer using vkMapMemory (called once at creation, kept mapped), write data each frame without re-mapping, using VK_MEMORY_PROPERTY_HOST_COHERENT_BIT.','C','I'],
+['What is a VkDescriptorBufferInfo? Write code to update a uniform buffer descriptor set with vkUpdateDescriptorSets, specifying the buffer, offset, and range.','C','B'],
+['Write a Vulkan buffer device address program: enable bufferDeviceAddress feature, create a SSBO with SHADER_DEVICE_ADDRESS usage, get its address with vkGetBufferDeviceAddress, and pass it to a shader as a push constant.','C','A'],
+['What is VMA defragmentation? Write code to begin a VMA defragmentation pass, move allocations to reduce fragmentation, and copy data to new locations.','C','A'],
+['What is the difference between VK_SHARING_MODE_EXCLUSIVE and VK_SHARING_MODE_CONCURRENT for a buffer shared between the graphics and compute queues?','T','I'],
+['Design a Vulkan VRAM budget management system for a game: specify the allocation strategy for meshes, textures, render targets, and uniform buffers. How do you handle VRAM pressure when the user opens a complex scene?','T','A']
+]},
+{id:'m12',phase:2,num:'12',icon:'🔄',title:'Vulkan — Synchronization',desc:'Semaphores, fences, barriers, pipeline stages, events, render pass subpass dependencies, timeline semaphores.',qs:[
+['What are the three Vulkan synchronization primitives: VkSemaphore (GPU-GPU), VkFence (GPU-CPU), and VkEvent (within command buffer)? When do you use each?','T','B'],
+['What is a VkPipelineBarrier? Describe the srcStageMask, dstStageMask, srcAccessMask, dstAccessMask, and oldLayout/newLayout fields in a VkImageMemoryBarrier.','T','I'],
+['Write a VkPipelineBarrier for transitioning a texture from TRANSFER_DST_OPTIMAL to SHADER_READ_ONLY_OPTIMAL: specify the correct stage and access masks.','C','I'],
+['What is a pipeline stage mask? List 6 important pipeline stages: TOP_OF_PIPE, TRANSFER, VERTEX_SHADER, EARLY_FRAGMENT_TESTS, FRAGMENT_SHADER, BOTTOM_OF_PIPE.','T','I'],
+['What is a subpass dependency in a Vulkan render pass? Write a VkSubpassDependency that makes the lighting subpass wait for the G-buffer subpass to finish writing to its color attachments.','C','I'],
+['What is a VkMemoryBarrier vs VkBufferMemoryBarrier vs VkImageMemoryBarrier? When would you use a global vs resource-specific barrier?','T','I'],
+['Write code to record a compute pass followed by a graphics pass that reads the compute output: insert a VkPipelineBarrier between them with COMPUTE_SHADER stage -> VERTEX_SHADER stage.','C','I'],
+['What is a timeline semaphore? How does VkSemaphoreTypeCreateInfo with VK_SEMAPHORE_TYPE_TIMELINE allow waiting for a specific counter value vs binary semaphores?','T','I'],
+['Write a Vulkan multi-queue submission: submit a compute command buffer to the async compute queue, then submit a graphics command buffer to the graphics queue that waits for the compute semaphore to signal.','C','A'],
+['What is GPU-GPU synchronization across frames? Write a frames-in-flight implementation with 2 frames: fences to limit CPU to 2 frames ahead of GPU, semaphores for image-available and render-finished.','C','I'],
+['Write a Vulkan event example: record vkCmdSetEvent after a compute dispatch, then vkCmdWaitEvents before a draw that depends on the compute output in the same command buffer.','C','A'],
+['What is the Vulkan dependency chain? How do three sequential operations (A -> B -> C) require only two barriers, not three pairwise barriers?','T','I'],
+['Write a VkPipelineBarrier for a compute write -> compute read dependency (SSBO written by compute pass 1, read by compute pass 2): specify the exact stage and access masks.','C','I'],
+['What is queue family ownership transfer? Write code to release a buffer from the graphics queue family and acquire it in the compute queue family using a pair of pipeline barriers.','C','A'],
+['What are Vulkan validation layer synchronization validation errors? Give 3 examples of errors it catches: missing barrier, wrong layout, unsynchronized write-after-read.','T','I'],
+['Write a Vulkan render graph implementation stub: represent each pass as a node with input/output resources, automatically insert the required pipeline barriers between passes.','C','A'],
+['What is the difference between VK_ACCESS_MEMORY_READ_BIT and VK_ACCESS_SHADER_READ_BIT? When is the broader memory read bit needed?','T','A'],
+['Write a Vulkan split barrier: record vkCmdPipelineBarrier2 with the new synchronization2 extension, which allows splitting a barrier into a signal and a wait for GPU-side pipelining.','C','A'],
+['What is overdraw in Vulkan and how does a well-ordered pipeline barrier avoid pipeline bubbles?','T','A'],
+['Debug a Vulkan program with a flickering frame: describe your process using RenderDoc to capture frames, inspect resource states before/after draw calls, and identify the missing barrier.','C','A']
+]},
+{id:'m13',phase:2,num:'13',icon:'🟣',title:'Vulkan — Compute & Ray Tracing',desc:'Compute pipelines, dispatch, SSBO, ray tracing (VK_KHR_ray_tracing_pipeline), acceleration structures, SBT.',qs:[
+['Write a Vulkan compute pipeline: create a VkComputePipelineCreateInfo with a compute shader stage, create a descriptor set layout (1 SSBO in, 1 SSBO out), dispatch 1024 workgroups of size 64.','C','I'],
+['Write a Vulkan compute shader (GLSL) that performs parallel prefix sum (inclusive scan) using shared memory: load elements, reduce, store partial sums, second pass propagates prefix.','C','A'],
+['Write a Vulkan GPU particle simulation: compute pass updates position += velocity * dt and writes back to an SSBO, graphics pass reads the SSBO as a vertex buffer with VERTEX_BUFFER usage, draws points.','C','A'],
+['Write a Vulkan indirect dispatch: compute a dispatch command (VkDispatchIndirectCommand) in a compute shader based on visible object count, then call vkCmdDispatchIndirect for the next pass.','C','A'],
+['What is the Vulkan ray tracing pipeline (VK_KHR_ray_tracing_pipeline)? List the shader stages: raygen, closest-hit, miss, any-hit, intersection.','T','I'],
+['What is a BLAS (Bottom-Level Acceleration Structure) in Vulkan ray tracing? Write code to create one from a triangle mesh: VkAccelerationStructureGeometryKHR, VkAccelerationStructureBuildGeometryInfoKHR, scratch buffer, vkCmdBuildAccelerationStructuresKHR.','C','A'],
+['What is a TLAS (Top-Level Acceleration Structure)? Write code to create one from instances (VkAccelerationStructureInstanceKHR with transform, BLAS address, and custom index).','C','A'],
+['What is a Shader Binding Table (SBT) in Vulkan ray tracing? Write code to create the SBT buffer with aligned entries for raygen, miss, and hit groups.','C','A'],
+['Write a minimal Vulkan ray tracing raygen shader (GLSL): compute a ray from the camera through the pixel, call traceRayEXT, write the result to a storage image.','C','A'],
+['Write a Vulkan ray tracing closest-hit shader: receive the hit attributes (barycentric coords), interpolate vertex normals, compute diffuse shading from a light direction.','C','A'],
+['Write a Vulkan denoiser integration: after ray tracing, dispatch the NVIDIA OptiX or Intel OIDN denoiser on the noisy image and the albedo/normal G-buffer using Vulkan external memory (VK_KHR_external_memory).','C','A'],
+['What is a Vulkan async compute queue? Write code to overlap a compute dispatch on the async compute queue with graphics rendering, using semaphores for synchronization.','C','A'],
+['Write a Vulkan compute histogram: count pixel color frequency in a 256-bin histogram using atomic operations (atomicAdd on shared memory, then flush to global SSBO).','C','I'],
+['What is wave intrinsics (VK_EXT_shader_subgroup_ballot)? Write a compute shader using subgroupBroadcast, subgroupAdd, and subgroupElect to implement a parallel reduction without shared memory.','C','A'],
+['Write a Vulkan ray traced shadow pass: for each fragment in the G-buffer, trace a shadow ray to the light source, return 0 if miss (the light is visible) or 1 if any-hit triggers (shadow).','C','A'],
+['What is a Vulkan cooperative matrix (VK_KHR_cooperative_matrix)? How does it allow a group of shader invocations to collaboratively compute a matrix multiply using hardware tensor units?','T','A'],
+['Write a Vulkan compute shader implementing parallel bitonic sort: sort 1024 floats in shared memory using the bitonic merge network, then write sorted output to a SSBO.','C','A'],
+['What is the difference between opaque and masked geometry in Vulkan ray tracing? How do you use any-hit shaders to implement alpha masking?','T','I'],
+['Write a Vulkan ray traced reflection pass: on each primary hit, if the surface has a metallic material, fire a reflection ray and return the traced color as the reflection contribution.','C','A'],
+['Design a hybrid rasterization + ray tracing rendering pipeline in Vulkan: rasterize primary visibility, use ray tracing only for shadows and reflections, integrate results in a compositing pass.','T','A']
+]},
+{id:'m14',phase:2,num:'14',icon:'🔵',title:'OpenCL — Heterogeneous Compute',desc:'Platform model, NDRange, work groups, memory spaces, kernels, buffer/image objects, profiling, CL/GL interop.',qs:[
+['What is the OpenCL platform model? Describe: platform, device, context, command queue, and how a host program submits kernels to multiple devices.','T','B'],
+['Write an OpenCL program (C host + kernel) that adds two float arrays: clCreateBuffer for A, B, C; clSetKernelArg; clEnqueueNDRangeKernel with global_size=N, local_size=64; clEnqueueReadBuffer.','C','B'],
+['What is the OpenCL NDRange execution model? What are global work items, work groups, and local work items and how do they map to GPU wavefronts/warps?','T','B'],
+['Write an OpenCL kernel using local memory (__local float tile[256]): load a tile from global to local, call barrier(CLK_LOCAL_MEM_FENCE), compute a tiled matrix multiply.','C','I'],
+['What are the four OpenCL memory spaces: global, local, private, constant? Describe the scope, latency, and size limit of each.','T','B'],
+['Write an OpenCL image2d_t kernel: read from an input image2d_t using read_imagef(img, sampler, coord), apply a 3x3 box blur, and write to an output image2d_t with write_imagef.','C','I'],
+['Write an OpenCL parallel prefix scan kernel: use a two-phase up-sweep / down-sweep algorithm in local memory within each work group, then add a second kernel to handle inter-group carries.','C','A'],
+['What is OpenCL-OpenGL interop? Write code to create an OpenCL context from an existing OpenGL context, acquire a GL_TEXTURE_2D as a cl_mem image, process it in an OpenCL kernel, and release it back to OpenGL.','C','A'],
+['Write an OpenCL kernel for image convolution: apply an arbitrary 5x5 filter kernel (passed as a constant array). Handle boundary clamping. Benchmark vs a CPU single-thread equivalent.','C','I'],
+['What is OpenCL 2.x Shared Virtual Memory (SVM)? Write code using coarse-grained SVM (clSVMAlloc) to share a linked list pointer between host and device without explicit copies.','C','A'],
+['Write an OpenCL program using profiling events: set CL_QUEUE_PROFILING_ENABLE, get CL_PROFILING_COMMAND_START and CL_PROFILING_COMMAND_END, compute the kernel execution time in nanoseconds.','C','I'],
+['What is the difference between out-of-order and in-order OpenCL command queues? How do you use event dependencies (clEnqueueNDRangeKernel with event wait list) to sequence operations in an out-of-order queue?','T','I'],
+['Write an OpenCL kernel for parallel reduction (sum): each work group reduces its local elements, stores a partial sum to global memory, then a second pass sums the partial sums.','C','I'],
+['What is OpenCL SPIR-V ingestion? How do you compile a .cl kernel to SPIR-V using clspirv-translator or spirv-llvm-translator and load it with clCreateProgramWithIL?','T','A'],
+['Write an OpenCL radix sort implementation: sort an array of uint32 values using 4-bit radix passes, each pass using a count-sort in local memory.','C','A'],
+['Write an OpenCL device query program: enumerate all platforms and devices, print device name, type, max compute units, max work group size, max clock frequency, and local memory size.','C','B'],
+['What is OpenCL on ARM Mali? How does the Mali driver map OpenCL work groups to shader cores and what local memory size is available on typical Mali-G series GPUs?','T','I'],
+['Write an OpenCL depth of field image processing pipeline: compute the CoC per-pixel from a depth buffer, apply a variable-radius blur based on CoC, output the blurred image.','C','A'],
+['What is SYCL? How does it provide a modern C++17 abstraction over OpenCL/Level Zero/CUDA and what is the execution model for a SYCL kernel?','T','A'],
+['Design an OpenCL compute pipeline for real-time video object detection at 30fps on an embedded GPU: describe the image preprocessing kernel, the inference pipeline (using OpenCL for a quantized CNN), and the post-processing step.','T','A']
+]},
+{id:'m15',phase:2,num:'15',icon:'📐',title:'HLSL & DirectX 12 Fundamentals',desc:'HLSL syntax, cbuffer/struct, SRV/UAV/CBV, DX12 device, command lists, descriptor heaps, root signature.',qs:[
+['What is HLSL? How does it differ from GLSL in syntax: semantics (POSITION, TEXCOORD0), cbuffer, register bindings, and intrinsics (mul, dot, saturate, lerp)?','T','B'],
+['Write an HLSL vertex shader that reads float3 position (POSITION0) and float2 uv (TEXCOORD0), transforms position with a cbuffer MVP matrix (float4x4), and outputs position (SV_POSITION) and uv.','C','B'],
+['Write an HLSL pixel shader that samples a Texture2D<float4> with a SamplerState (bilinear), applies a float3 tint from a cbuffer, and outputs the result.','C','B'],
+['What is a DirectX 12 descriptor heap? What are the four types: CBV/SRV/UAV, Sampler, RTV, DSV? How does a shader-visible heap differ from a non-shader-visible heap?','T','I'],
+['Write D3D12 code to create a root signature with: one 32-bit root constant, one CBV root descriptor, and one descriptor table (3 SRVs + 1 sampler in the same range).','C','I'],
+['Write D3D12 code to create a committed resource for a vertex buffer (D3D12_HEAP_TYPE_DEFAULT), upload data via an upload heap (D3D12_HEAP_TYPE_UPLOAD), and transition the resource to D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER.','C','I'],
+['What is a D3D12 command list? Write code to: create a command allocator, create a command list, reset it, record a draw call (SetPipelineState, SetGraphicsRootSignature, IASetVertexBuffers, DrawInstanced), close it, and submit to the queue.','C','I'],
+['Write D3D12 code to create a fence, insert it with ID3D12CommandQueue::Signal after a submit, and CPU-wait using WaitForSingleObject on a fence event.','C','I'],
+['What is a DX12 resource barrier? Write D3D12_RESOURCE_BARRIER for transitioning a render target from RENDER_TARGET to PRESENT state. When do you use a UAV barrier?','C','I'],
+['Write an HLSL compute shader (numthreads(8,8,1)) that reads from a Texture2D<float4> SRV and writes to a RWTexture2D<float4> UAV, converting from RGB to grayscale.','C','I'],
+['Write HLSL wave intrinsics using WaveActiveSum, WaveGetLaneCount, WaveIsFirstLane to implement a parallel reduction within a wave (subgroup) for a pixel shader.','C','A'],
+['Write D3D12 code to create a DXR (DirectX Ray Tracing) BLAS from a triangle mesh: D3D12_RAYTRACING_GEOMETRY_DESC, D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC, dispatch the build.','C','A'],
+['What is a DX12 descriptor table vs root descriptor vs root constant? When is each the right choice from a performance perspective?','T','I'],
+['Write an HLSL mesh shader (amplification + mesh stage): the amplification shader culls a list of meshlets by frustum, emits visible meshlet IDs; the mesh shader outputs vertices and primitives for each meshlet.','C','A'],
+['Write a D3D12 multi-GPU explicit rendering: enumerate adapters, create devices on two adapters, use ID3D12Device::CreateSharedHandle to share a fence, render on GPU 0, transfer the result to GPU 1 for post-processing.','C','A'],
+['What is HLSL SM 6.6? What new features does it add: payload variables in mesh shaders, atomic float operations, resource descriptor heap indexing?','T','A'],
+['Write an HLSL shader that uses D3D12 dynamic resources (SM 6.6): index into the global SRV heap using a descriptor index passed as a root constant (no root signature binding needed).','C','A'],
+['What is DirectX Agility SDK? How does it let you use newer D3D12 features (SM6.6, Enhanced Barriers) without OS update requirements?','T','I'],
+['Write a D3D12 Tier 1 bindless rendering pipeline: store all texture descriptors in a large array, pass a texture index via a root constant, index into the array in HLSL.','C','A'],
+['Compare D3D12 enhanced barriers (D3D12_BARRIER_GROUP) vs the old ResourceBarrier API. What flexibility does the new API add: split barriers, access-only barriers, and layout-only barriers?','T','A']
+]},
+{id:'m16',phase:3,num:'16',icon:'🖥️',title:'Vulkan & OpenGL on Linux — System Integration',desc:'DRM/KMS, GBM, EGL, Wayland, multi-GPU, prime offload, headless rendering, CI GPU testing.',qs:[
+['How do you render with Vulkan in a headless environment (no display server)? Write code using VK_EXT_headless_surface or creating a VkImage directly and saving the result with vkCmdCopyImageToBuffer.','C','I'],
+['What is PRIME GPU offload on Linux? How does DRI_PRIME=1 or VK_ICD_FILENAMES select the discrete GPU while the integrated GPU drives the display?','T','I'],
+['Write a script that discovers all GPUs in the system using /sys/class/drm, /proc/driver/nvidia/gpus, and vulkaninfo --summary, and prints device name, VRAM, and PCI address.','C','B'],
+['What is the Vulkan ICD loader? How does it discover GPU drivers via /etc/vulkan/icd.d/*.json files and how do you force a specific ICD?','T','I'],
+['Write a Vulkan headless CI renderer: render a reference frame, compute a pixel hash, compare to a golden hash, and fail the test if they differ. Run in a Docker container with swiftshader as the CPU Vulkan implementation.','C','A'],
+['What is SwiftShader? How does Google s software Vulkan implementation enable CI GPU testing on CPU-only VMs?','T','I'],
+['Write a multi-GPU Vulkan program: enumerate devices, select a discrete GPU for rendering and an iGPU for display, share the rendered image via VK_KHR_external_memory_fd (DMA-BUF), and display it.','C','A'],
+['What is a DMA-BUF? How does it allow sharing a GPU buffer between Vulkan (VK_KHR_external_memory_fd), OpenCL (cl_khr_external_memory), and the Linux display stack (DRM import)?','T','I'],
+['Write a Wayland + Vulkan window with wayland-protocols (xdg-shell, xdg-toplevel): create the surface, use VK_KHR_wayland_surface to create a VkSurfaceKHR, and render with VSync from the frame callback.','C','A'],
+['What is the drm_format_modifier extension (VK_EXT_image_drm_format_modifier)? How does it allow Vulkan to create images with GPU-vendor-specific tiling that can be efficiently scanned out by DRM?','T','A'],
+['Write a Linux framerate benchmark for a Vulkan renderer: measure frame time using CLOCK_MONOTONIC, compute 1% and 0.1% low frame times, and plot a frame time histogram.','C','I'],
+['What is VK_KHR_display? How does it allow Vulkan to directly drive a display without a window manager, similar to DRM modesetting?','T','A'],
+['Write a script to automate GPU driver installation on Ubuntu 24.04: detect GPU (lspci), choose nvidia-driver-xxx vs mesa-vulkan-drivers, run the installer, and verify with vulkaninfo.','C','B'],
+['What is GBM (Generic Buffer Management) and how does it interact with EGL? Write code to create a GBM device, allocate a GBM BO with GBM_BO_USE_RENDERING|GBM_BO_USE_SCANOUT, wrap it as an EGL image, and render to it.','C','A'],
+['What is render offload in a laptop with both Intel iGPU and NVIDIA dGPU? How does the NVIDIA driver use NVLink or PCIe to copy the rendered frame from dGPU to iGPU framebuffer?','T','I'],
+['Write a Vulkan render-to-video pipeline: render frames to VkImages, export them as DMA-BUFs, import into FFmpeg via the hwframe context, and encode to H.264/H.265 using hardware encoding.','C','A'],
+['What is synchronization between Vulkan and the Linux display stack? How do acquire/release fences (VkFence exported as sync_file) integrate with the DRM atomic commit fence mechanism?','T','A'],
+['Write a Vulkan multiview render: use VK_KHR_multiview to render left-eye and right-eye views in a single render pass by setting viewMask=0b11 and two view-offset-zero layers.','C','A'],
+['What is a Vulkan external fence (VK_KHR_external_fence_fd)? How does it allow a Vulkan fence to be represented as a Linux sync_file fd for integration with the kernel s dma-fence infrastructure?','T','A'],
+['Design a GPU-accelerated video analytics pipeline on Linux: V4L2 capture -> Vulkan/CUDA decode -> GPU inference (TensorRT) -> Vulkan overlay rendering -> DRM/KMS display. Specify the buffer sharing mechanism at each stage.','T','A']
+]},
+{id:'m17',phase:3,num:'17',icon:'📊',title:'GPU Profiling & Debugging',desc:'Nsight Graphics, Nsight Systems, RenderDoc, AMD RGP, perf counters, occupancy, memory bandwidth, timeline.',qs:[
+['What is RenderDoc? How do you capture a frame, inspect draw calls, view G-buffer attachments, and debug a shader by modifying it live in the RenderDoc shader editor?','T','B'],
+['Write a RenderDoc API integration in C: call RENDERDOC_GetAPI to get the API function pointers, call StartFrameCapture before a draw call, EndFrameCapture after, and launch the RenderDoc UI to analyze.','C','I'],
+['What is NVIDIA Nsight Graphics? How do you capture a frame, navigate the events timeline, inspect resource states, and identify a missing pipeline barrier?','T','B'],
+['What is NVIDIA Nsight Systems? How does it profile the CPU+GPU timeline, identifying CPU stalls, kernel launch overhead, and PCIe transfer bottlenecks?','T','B'],
+['Write a Nsight Compute CLI command to profile a CUDA kernel: specify the metric set, output format, and how to parse the roofline data to identify if the kernel is compute or memory bound.','C','I'],
+['What is AMD Radeon GPU Profiler (RGP)? How does it show instruction cache stalls, wavefront occupancy, and VGPR (vector register) usage?','T','I'],
+['Write a GPU frame pacing analysis: capture 1000 frame times using Vulkan timestamp queries, compute mean, standard deviation, and 99th percentile latency. Plot with matplotlib.','C','I'],
+['What is a Vulkan timestamp query pool? Write code to insert two timestamps (begin and end of a render pass) and read back the duration in nanoseconds using the timestampPeriod.','C','I'],
+['Write a GPU memory bandwidth measurement program: launch a GLSL compute shader that streams a large buffer, measure bytes read with a Vulkan counter query or perf counter, compute GB/s.','C','I'],
+['What are the top 5 GPU performance anti-patterns for Vulkan? List: too many draw calls, GPU-CPU sync per frame, missing pipeline barriers, unaligned UBO access, and too small workgroups.','T','I'],
+['Write an automatic shader hot-reload system: watch .glsl files with inotify, recompile to SPIR-V with glslangValidator in a background thread, recreate the Vulkan pipeline, and swap it without dropping frames.','C','A'],
+['What is overshading? How does a fragment shader that runs on many pixels that are ultimately overdrawn waste GPU cycles, and how do you measure it?','T','I'],
+['Write a GPU occupancy analysis tool in Python: parse Nsight Compute CSV output, plot occupancy vs register count, and identify which kernels are register-bound.','C','I'],
+['What is shader precompilation (pipeline cache) in Vulkan? How do you implement a disk cache that avoids pipeline stutter on the first frame by loading precompiled SPIR-V + driver binary?','T','I'],
+['Write a GPU memory leak detector: track every VkDeviceMemory allocation and deallocation in a map, print all leaked allocations with size and stack trace at program exit.','C','I'],
+['What is the difference between sm_efficiency (how often the SM has at least one warp active) and warp_efficiency (ratio of issued warps to issued warps for the peak)? What does each indicate?','T','A'],
+['Write a shader debugger integration using VK_NV_device_diagnostic_checkpoints: insert string markers at key points in a command buffer, and on VK_ERROR_DEVICE_LOST, read back the last completed checkpoint.','C','A'],
+['What is Intel GPA (Graphics Performance Analyzers)? How does it profile OpenGL and Vulkan on Intel iGPU, showing EU (Execution Unit) utilization and cache hit rates?','T','I'],
+['What is the difference between GPU-bound and CPU-bound frame rendering? How do you determine which is the bottleneck using Nsight Systems timeline and what do you do in each case?','T','B'],
+['Design a continuous GPU regression test system: capture golden reference frame images in CI, compute perceptual similarity (SSIM), alert if a shader change reduces quality below threshold.','T','A']
+]},
+{id:'m18',phase:3,num:'18',icon:'🧵',title:'GPU Compute — Advanced Patterns',desc:'Persistent kernels, cooperative groups, warp intrinsics, stream parallelism, multi-GPU, P2P, NVLink, async compute.',qs:[
+['What is a persistent thread kernel in CUDA? How does a grid of exactly SM-count blocks that loop over a work queue outperform a standard one-block-per-item grid for irregular workloads?','T','A'],
+['Write a CUDA cooperative groups reduction: use cooperative_groups::thread_block, cooperative_groups::thread_block_tile<32> for warp-level reduction, then block-level reduction, then grid-level using cooperative launch.','C','A'],
+['Write a CUDA graph: record a sequence of kernels (preprocess -> inference -> postprocess) into a CUgraph, instantiate it as a CUgraphExec, and launch it repeatedly to amortize kernel launch overhead.','C','A'],
+['What is CUDA stream parallelism? Write a program that overlaps a memory copy (cudaMemcpyAsync) with kernel execution using two CUDA streams with pinned (page-locked) memory.','C','I'],
+['Write a CUDA multi-GPU program: split a large array between two GPUs using cudaMemcpyPeer, run a kernel on each, synchronize, and gather results back to GPU 0.','C','A'],
+['What is NVLink P2P (peer-to-peer)? How does cudaDeviceEnablePeerAccess allow a kernel on GPU 0 to directly read from GPU 1 s memory without going through the CPU?','T','A'],
+['Write a CUDA warp-level primitive program: use __ballot_sync to compute a per-warp mask of threads satisfying a condition, use __popc to count them, and use __shfl_down_sync to broadcast a value.','C','I'],
+['What is a CUDA stream ordered allocator? How does cudaMallocAsync and cudaFreeAsync allow memory allocation inside CUDA streams without host synchronization?','C','A'],
+['Write a CUDA priority stream program: create two streams (normal priority, high priority), submit an interactive UI kernel to the high-priority stream and a background compute kernel to the normal stream.','C','A'],
+['What is the Vulkan async compute queue? Write a Vulkan program that submits a GPU particle simulation to the async compute queue and geometry rendering to the graphics queue, overlapping both.','C','A'],
+['Write a CUDA kernel that uses Tensor Core intrinsics (wmma): declare wmma::fragment for A, B, C matrices (FP16, 16x16), call wmma::load_matrix_sync, wmma::mma_sync, wmma::store_matrix_sync.','C','A'],
+['What is a CUDA device graph with conditional nodes? Write a graph where a kernel checks a condition, then the graph branches to one of two kernel nodes based on the result.','C','A'],
+['Write a CUDA Green Context (Compute Slicing) program: partition the GPU into two slices using CUDA Green Contexts, run two independent kernels concurrently on separate slices.','C','A'],
+['What is CUDA CPP thread hierarchy? Describe: thread, warp, block, SM (thread block cluster in H100), grid, device, and how cooperative groups exposes each level.','T','I'],
+['Write a CUDA zero-copy memory program: allocate host memory with cudaHostAlloc(cudaHostAllocMapped), get device pointer with cudaHostGetDevicePointer, access it from a kernel and measure the bandwidth penalty.','C','I'],
+['Write an OpenCL 2.0 device-side enqueue kernel: the parent kernel enqueues child kernels using enqueue_kernel() based on runtime-computed work sizes.','C','A'],
+['Write a CUDA-Vulkan interop program: allocate a CUDA array, export it as a DMA-BUF, import into Vulkan as a VkImage, render to it in Vulkan, then process it in CUDA without copying.','C','A'],
+['What is the NCCL library? Write an all-reduce collective operation across 4 GPUs using ncclAllReduce to compute the global mean of a float tensor.','C','A'],
+['Write a CUDA pipeline pattern for latency hiding: use cuda::pipeline to overlap memory copies and compute in a double-buffered shared memory scheme inside a single kernel.','C','A'],
+['Design a GPU cluster compute scheduling system: 8 nodes, 8 GPUs each, mix of rendering jobs and ML training jobs. Specify the job queue, GPU affinity policy, NVLink topology, and failure recovery strategy.','T','A']
+]},
+{id:'m19',phase:3,num:'19',icon:'🔆',title:'Real-Time Rendering — Modern Techniques',desc:'PBR, GI probes, meshlets, nanite-style virtualized geometry, variable rate shading, Lumen-style GI, ray reconstruction.',qs:[
+['What is physically-based rendering (PBR)? Describe the metallic/roughness workflow: albedo, metallic, roughness, normal, AO maps and how they feed the Cook-Torrance BRDF.','T','B'],
+['Implement a spherical harmonics (SH) irradiance probe in GLSL: project the environment map into 9 SH coefficients (L0-L2), then reconstruct the irradiance for a given normal direction.','C','A'],
+['What is a meshlet? How does a large mesh get partitioned into meshlets of ~64 triangles each, and how does a mesh shader process them for efficient GPU-driven rendering?','T','A'],
+['Write a mesh shader (GLSL GL_NV_mesh_shader) that processes a meshlet: reads vertex positions and indices from SSBOs, transforms vertices, and outputs the primitive list.','C','A'],
+['What is Nanite-style virtualized geometry? How does Epic s Unreal Engine 5 use hierarchical cluster DAGs to stream and select the right LOD cluster per meshlet at runtime?','T','A'],
+['What is Variable Rate Shading (VRS)? How does Vulkan VK_KHR_fragment_shading_rate allow rendering at 1x2, 2x2, or 4x4 pixels per shading operation in low-importance regions?','T','I'],
+['Write a Vulkan VRS implementation: compute a shading rate image (VkExtent2D per tile) based on motion vectors and triangle density, then use it to reduce shading rate in background regions.','C','A'],
+['What is Lumen-style Global Illumination? How does it combine screen-space probes, surface cache, and radiance cascade to compute indirect lighting in real time?','T','A'],
+['Implement a simple probe-based GI system in OpenGL: place a 4x4x4 grid of radiance probes in the scene, bake irradiance into SH coefficients per probe, and sample the nearest probe in the final shader.','C','A'],
+['What is ray reconstruction / DLSS Ray Reconstruction? How does the neural network replace denoising for ray-traced effects (reflections, shadows, AO) by learning from multiple frames?','T','A'],
+['Implement DLSS-style upscaling using a temporal accumulation pass: render at half resolution, accumulate with history reprojected using motion vectors, and sharpen the result.','C','A'],
+['Write a screen-space global illumination (SSGI) pass: for each fragment, cast multiple rays in the hemisphere using depth buffer reprojection, accumulate indirect radiance.','C','A'],
+['What is a sky atmosphere model? Implement a real-time Rayleigh and Mie scattering sky shader: transmittance look-up table (LUT), single scattering LUT, and final aerial perspective.','C','A'],
+['Write a GPU particle system in Vulkan/GLSL: emit, simulate, and render 1 million particles. Simulation runs in a compute shader (position += velocity; check bounds; emit new). Render using gl_PointSize.','C','A'],
+['Implement a foliage wind animation system in GLSL: per-vertex wind displacement using a sine wave driven by world position, time, and a wind direction uniform. Add stiffness based on the vertex height in the plant.','C','I'],
+['What is the difference between tiled and clustered deferred shading? How does clustered shading extend tiling to 3D view frustum cells to handle lights at varying depths?','T','A'],
+['Implement a contact shadow pass in GLSL: for each fragment, march a short-distance ray toward the light in screen space and return shadow factor based on depth buffer comparison.','C','I'],
+['What is adaptive shading? How does Intel s Coarse Pixel Shading (CPS) or AMD s Deformable Primitive Shading reduce fragment workload in flat, low-detail screen regions?','T','A'],
+['Write a Vulkan ray traced global illumination probe update: for each probe in a 3D grid, dispatch a raygen shader to sample 128 random directions, accumulate radiance into the probe SH.','C','A'],
+['Design the rendering architecture for a AAA open-world game: specify the visibility system (scene hierarchy, frustum + occlusion cull), shadow cascade, global illumination (probes + SSGI), and post-process stack. Target: 60fps at 4K on a high-end GPU.','T','A']
+]},
+{id:'m20',phase:3,num:'20',icon:'🎬',title:'GPU Video & Image Processing',desc:'VAAPI, NVDEC/NVENC, V4L2 M2M, OpenCV GPU, Halide, FFmpeg GPU, frame analysis, real-time video pipeline.',qs:[
+['What is VAAPI (Video Acceleration API)? How does it provide hardware-accelerated H.264/H.265/AV1 decode on Intel/AMD/NVIDIA GPUs on Linux?','T','I'],
+['Write a VAAPI H.264 decode program: open the VAAPI device (/dev/dri/renderD128), create a VA display and config (VAProfileH264High), allocate surfaces, decode a frame, and write the Y plane to a file.','C','A'],
+['What is NVDEC/NVENC? Write a CUDA-based H.265 encode pipeline using the NVENC SDK: create an NvEncoderCuda, set encode params (bitrate, FPS, preset), encode a YUV frame, and write the bitstream.','C','A'],
+['What is V4L2 M2M (Memory-to-Memory)? How does it use the Linux kernel s V4L2 API to accelerate video decode on SoC hardware decoders (Raspberry Pi, i.MX8, Rockchip)?','T','I'],
+['Write a V4L2 M2M H.264 decode program: open the M2M device (/dev/video0), set input format (V4L2_PIX_FMT_H264), set output format (V4L2_PIX_FMT_NV12), queue input NAL units, dequeue decoded frames.','C','A'],
+['Write an OpenCV CUDA pipeline: load an image with cv::imread, upload to GpuMat with cv::cuda::GpuMat::upload(), apply a Gaussian blur on GPU (cv::cuda::GaussianBlur), and download the result.','C','I'],
+['Write an OpenCV GPU object detection pipeline: load a YOLOv8 ONNX model with cv::dnn::readNetFromONNX, set backend to CUDA (cv::dnn::DNN_BACKEND_CUDA), run inference on a GPU frame, and draw bounding boxes.','C','I'],
+['What is Halide? How does its algorithm-schedule separation allow writing image processing algorithms once and targeting CPU (SIMD), CUDA, OpenCL, and Metal by changing the schedule?','T','I'],
+['Write a Halide pipeline for a 5x5 Gaussian blur: define the algorithm in Halide::Func, schedule it for GPU (gpu_blocks, gpu_threads), compile it, and benchmark vs an OpenCV CUDA blur.','C','A'],
+['What is FFmpeg hardware acceleration on Linux? Write an FFmpeg command to decode a 4K H.265 file using VAAPI (-hwaccel vaapi) and measure CPU usage vs software decode.','C','B'],
+['Write a zero-copy GPU video pipeline: V4L2 M2M decode produces DMA-BUF frames, import them into OpenCL as cl_mem images via cl_khr_external_memory, run an inference kernel, and display via DRM.','C','A'],
+['Write a GPU-based video stabilization pipeline: compute optical flow with OpenCV CUDA (cv::cuda::FarnebackOpticalFlow), estimate the affine transform per frame, warp the frame with cv::cuda::warpAffine.','C','A'],
+['What is HW-accelerated HDR tone mapping? Write an OpenCL kernel that applies ACES filmic tone mapping to a float16 HDR video frame and outputs an 8-bit SDR result.','C','I'],
+['What is color space conversion on GPU? Write a GLSL compute shader that converts a YUV420 (NV12) frame to RGB888 using BT.601 coefficients. Handle luma and chroma planes separately.','C','I'],
+['Write a GPU-based motion detection system: compute frame difference in a GLSL compute shader, threshold the absolute difference, count non-zero pixels using atomic counters, trigger an alert if count exceeds threshold.','C','I'],
+['What is the GStreamer VAAPI plugin? Write a GStreamer pipeline that decodes a file with vaapidecode, scales with vaapipostproc, and encodes to H.265 with vaapih265enc entirely on GPU.','C','I'],
+['Write a CUDA-based video denoising kernel: for each pixel, apply a 5x5 non-local means filter using shared memory to reduce global memory accesses.','C','A'],
+['Write an FFmpeg custom CUDA filter: implement a custom AVFilter that runs a CUDA kernel on each frame (invert colors), integrate it into an FFmpeg filter graph.','C','A'],
+['What is VMAF (Video Multimethod Assessment Fusion)? Write a Python script using libvmaf to compute the quality score between a reference and compressed video. Automate the measurement for 5 different bitrates.','C','I'],
+['Design a real-time GPU video analytics pipeline for a 16-camera surveillance system at 4K/30fps: specify the decode pipeline (NVDEC), preprocessing, inference (TensorRT on multiple streams), and alerting system.','T','A']
+]},
+{id:'m21',phase:3,num:'21',icon:'🌐',title:'WebGPU & Cross-Platform GPU',desc:'WebGPU API, WGSL shaders, Dawn/wgpu, Metal, cross-platform portability, SPIR-V cross, shader compilation.',qs:[
+['What is WebGPU? How does it differ from WebGL 2.0: explicit pipeline, command encoders, bind groups, and no global state?','T','B'],
+['Write a WebGPU hello triangle in JavaScript: create a GPUDevice, write a WGSL vertex+fragment shader, create a GPURenderPipeline, record a render pass in a GPUCommandEncoder, submit.','C','B'],
+['Write a WGSL compute shader that doubles each element of a storage buffer. Write the JavaScript to create the GPUBuffer, create the compute pipeline, set bind groups, and dispatch.','C','B'],
+['What is Dawn? How does it implement the WebGPU spec on top of Vulkan (Linux), Metal (macOS/iOS), and D3D12 (Windows)?','T','I'],
+['Write a WebGPU textured quad renderer in JavaScript: create a GPUTexture from an ImageBitmap, create a sampler, bind them in a bind group, and render a fullscreen quad.','C','I'],
+['What is wgpu (Rust)? Write a minimal wgpu program that: creates a surface, device, and queue, renders a solid color triangle, and presents it to the window via winit.','C','I'],
+['Write a WGSL PBR fragment shader: accept position, normal, albedo, metallic, roughness from the vertex stage and compute direct lighting from a point light using the Cook-Torrance BRDF.','C','A'],
+['What is SPIRV-Cross? How does it translate SPIR-V to WGSL, GLSL, HLSL, and MSL for cross-platform shader deployment?','T','I'],
+['Write a wgpu compute pipeline for a GPU particle simulation: 100K particles in a storage buffer, compute pass updates position += velocity, graphics pass renders particles as point sprites.','C','A'],
+['What is Metal? Write a Metal program in Swift/Obj-C: create an MTLDevice, compile a .metal shader, create an MTLRenderPipelineState, encode a draw call in an MTLCommandBuffer, present to CAMetalLayer.','C','A'],
+['What is the difference between WGSL and GLSL? List 5 syntactic differences: type declarations, entry point annotation, bind group syntax, no implicit cast, and explicit buffer address space.','T','I'],
+['Write a WebGPU post-processing pipeline: render scene to a GPUTexture, then run a second render pass that samples the texture and applies a vignette effect.','C','I'],
+['What is naga (Naga Shader Translator)? How does wgpu use it to translate WGSL/GLSL/SPIR-V to the native backend shader language at runtime?','T','I'],
+['Write a WebGPU shadow map: render a depth texture from the light s view, bind it in the main pass, and compute shadow factor in the WGSL fragment shader.','C','A'],
+['What is slang? How does NVIDIA s Slang shading language compile to SPIR-V, DXIL, WGSL, and GLSL, providing module system and generics beyond HLSL?','T','A'],
+['Write a wgpu multi-pass renderer: G-buffer pass writes albedo/normal to two GPUTextures, lighting pass reads them as bind group textures and outputs the final shaded image.','C','A'],
+['What is the difference between GPURenderPassEncoder and GPUComputePassEncoder in WebGPU? How do they correspond to VkCmdBeginRenderPass and vkCmdDispatch in Vulkan?','T','I'],
+['Write a WebGPU SSAO (Screen-Space Ambient Occlusion) pass: sample the depth buffer and reconstruct view-space positions, test hemisphere samples against the depth buffer.','C','A'],
+['Write a wgpu bindless rendering program: create a GPUBindGroupLayout with a texture array binding, fill it with 100 different textures, and index into it from the WGSL shader via a root constant.','C','A'],
+['Design a cross-platform GPU rendering library in Rust using wgpu: abstract over Vulkan/Metal/DX12/WebGPU, provide a scene graph API, a PBR material system, and a shadow pass. Describe the abstraction layers and portability constraints.','T','A']
+]},
+{id:'m22',phase:3,num:'22',icon:'🛡️',title:'GPU Security & Driver Internals',desc:'GPU driver stack, DRM security, GPU memory isolation, confidential computing (CC-Mode), SVM, IOMMU, exploit mitigations.',qs:[
+['What is the Linux GPU driver stack? Describe the layers: user-space API (Vulkan/OpenGL) -> libGL/libVulkan ICD -> DRM/GEM kernel driver -> GPU firmware (VBIOS/GSP) -> hardware.','T','I'],
+['What is DRM (Direct Rendering Manager) security? How does the DRM master / DRM auth mechanism prevent unauthorized processes from submitting GPU commands?','T','I'],
+['What is GPU memory isolation? How does the driver ensure that one process cannot read another process s GPU memory (resource tracking, fence + reset after context destroy)?','T','I'],
+['What is a GPU page fault? How does the IOMMU protect system memory from rogue DMA by mapping only the allowed physical pages into the GPU s virtual address space?','T','I'],
+['What is Confidential Computing (CC) mode on NVIDIA H100? How does CC-Mode encrypt GPU memory so that even a privileged VMM cannot read GPU compute results?','T','A'],
+['What is MIG (Multi-Instance GPU) on NVIDIA Ampere+? How does it partition a single A100 into up to 7 isolated MIG instances with dedicated SM, L2, and HBM slices?','T','I'],
+['What is a GPU guest driver in a virtual machine? How does VirtIO-GPU provide a paravirtualized display and 3D acceleration path between a guest OS and the host GPU?','T','I'],
+['What is SR-IOV (Single Root I/O Virtualization) for GPUs? How does it allow multiple VMs to share a single physical GPU via hardware-enforced isolation of virtual functions (VFs)?','T','A'],
+['What is a GPU firmware vulnerability? Describe a class of attack where a crafted shader or command causes the firmware (GSP/PMU) to execute attacker-controlled code.','T','A'],
+['What is speculative execution on a GPU? Unlike CPUs, most GPUs execute shaders non-speculatively — what hardware differences prevent Spectre-class attacks on GPU compute kernels?','T','A'],
+['Write a program that tests GPU memory isolation: allocate a GPU buffer in process A, share the fd via SCM_RIGHTS, and attempt to read it in process B without proper DRM auth. Observe the behavior.','C','A'],
+['Write a CUDA program that demonstrates GPU process isolation: process A allocates 1GB VRAM, process B tries to cudaIpcOpenMemHandle without proper permissions and handles the error.','C','I'],
+['Write a GPU occupancy attack detector: monitor perf counters (SM utilization) from a co-located process and detect when a victim GPU workload starts based on SM utilization changes.','C','A'],
+['What is the AMDGPU IOMMU integration? How does the AMDGPU driver use the IOMMU to prevent GPU DMA attacks against system memory when a guest VM is running untrusted shaders?','T','A'],
+['Write a script that queries GPU process isolation status: list all processes with GPU memory allocated (via nvidia-smi pmon or /proc/driver/nvidia/gpus/*/clients), and show per-process VRAM usage.','C','B'],
+['What is GPU shader obfuscation? How do game DRM systems (Denuvo GPU shaders) obfuscate SPIR-V to prevent cheating tools from reading game state from GPU memory?','T','A'],
+['What is a GPU side-channel attack via power side-channel? How does monitoring GPU power consumption (RAPL or NVML) leak information about the computation being performed?','T','A'],
+['Write a Vulkan program that uses VK_EXT_pipeline_robustness: enable robustBufferAccess, test out-of-bounds SSBO reads, and verify the driver returns 0 instead of crashing.','C','A'],
+['What is GPU driver hardening? List 5 mitigations that NVIDIA and AMD apply in their drivers: sandbox command submission, command stream validation, fault on OOB access, context isolation, and reset after hang.','T','I'],
+['Design a GPU security model for a multi-tenant cloud inference service: specify the isolation mechanism (MIG, SR-IOV, or CC-Mode), memory zeroing policy, shader validation, and performance monitoring.','T','A']
+]},
+{id:'m23',phase:3,num:'23',icon:'📦',title:'GPU Memory Optimization',desc:'Coalescing, bank conflicts, occupancy tuning, register spilling, L1/L2 pressure, texture cache, async transfers.',qs:[
+['What is memory coalescing in CUDA/GPU? How does having 32 threads in a warp access 32 consecutive floats result in a single 128-byte transaction vs 32 unaligned transactions?','T','B'],
+['Write a CUDA kernel with coalesced vs non-coalesced access patterns for a matrix: coalesced reads rows (thread i reads column 0..N in row i), non-coalesced reads columns. Benchmark the bandwidth difference.','C','B'],
+['What is a shared memory bank conflict? How does a 32-bank shared memory cause a 32-way conflict when 32 threads access the same bank (stride-32 access pattern)?','T','I'],
+['Write a CUDA shared memory bank conflict test: allocate __shared__ float arr[32][32], access with stride-1 (no conflict) and stride-32 (32-way conflict). Measure transaction counts with Nsight.','C','I'],
+['What is the L1 / texture cache in CUDA? How does using __ldg() (load via texture cache) improve performance for read-only data accessed with 2D spatial locality?','T','I'],
+['Write a CUDA register spilling test: write a kernel that uses more registers than the SM limit (e.g., 256 float registers), observe the ptxas spill warning, and measure the performance degradation.','C','I'],
+['Write a CUDA occupancy calculator in Python: given registers_per_thread, shared_memory_per_block, threads_per_block, compute the max active blocks per SM and occupancy for an Ampere SM.','C','I'],
+['What is the GPU L2 cache? Write a CUDA benchmark that shows the L2 hit rate difference between: random access across 4MB (L2 miss) vs sequential access of 4MB (L2 hit). Measure with Nsight.','C','I'],
+['What is async data movement in CUDA? Write a kernel using cuda::memcpy_async to load data from global memory to shared memory asynchronously while the previous tile is being computed.','C','A'],
+['Write a CUDA kernel for a stencil computation (heat diffusion on a 2D grid) with a halo exchange in shared memory: load a 16x16 tile plus 1-pixel border into shared memory, compute the 5-point stencil.','C','A'],
+['What is a struct-of-arrays (SoA) vs array-of-structs (AoS) layout? Write a CUDA kernel accessing particle position+velocity in AoS layout, measure bandwidth, then convert to SoA and measure again.','C','I'],
+['What is texture memory in CUDA? Write a kernel that uses a cudaTextureObject_t (2D, float4, normalized coordinates) to sample bilinear-filtered values from a 2D array — compare to __ldg and global memory.','C','I'],
+['Write a CUDA pinned memory benchmark: transfer 1GB host-to-device with pageable memory vs pinned (cudaMallocHost) memory. Measure the PCIe bandwidth difference.','C','B'],
+['Write a CUDA unified memory benchmark: allocate 1GB with cudaMallocManaged, access it in a kernel, then access it on the CPU. Measure page migration overhead vs explicit copies.','C','I'],
+['What is warp-level memory consistency in CUDA? How does __syncwarp() and __syncthreads() differ and when does each apply?','T','I'],
+['Write a Vulkan memory bandwidth benchmark using a storage buffer: fill it in a compute shader (write only), read it in a second dispatch (read only), and measure bytes/sec using timestamp queries.','C','I'],
+['What is the half-precision (FP16) memory bandwidth advantage on NVIDIA GPUs? Write a CUDA kernel that processes float16 arrays using __half2 (vectorized half2 arithmetic) and compare throughput to FP32.','C','I'],
+['Write a CUDA sparse access pattern optimizer: given a random permutation access pattern, use a GPU prefix sum to build a dense scatter/gather map and compare bandwidth to direct random access.','C','A'],
+['What is L1 hit latency vs global memory latency on NVIDIA Ampere? Write a CUDA pointer-chasing benchmark to measure each: random linked-list traversal with list fitting in L1 vs exceeding it.','C','A'],
+['Design a memory optimization strategy for a CUDA neural network inference engine: specify the layer-by-layer memory layout (activation tensors, weight packing), cache tiling strategy, and async prefetch plan.','T','A']
+]},
+{id:'m24',phase:3,num:'24',icon:'🎮',title:'Game Engine GPU Integration',desc:'Scene graphs, draw call submission, material system, render graph, GPU-driven rendering, frame scheduling.',qs:[
+['What is a render graph? How does Frostbite s frame graph (or Unreal s RDG) automatically insert pipeline barriers and manage transient resource lifetimes?','T','A'],
+['Implement a simple render graph in C++: each pass declares input resources (read) and output resources (write), the graph sorts passes topologically, inserts Vulkan barriers automatically.','C','A'],
+['What is a material system in a game engine? How does a node-based shader graph compile to GLSL/HLSL and how are permutations managed (per-material PSO variants)?','T','I'],
+['Write a GPU-driven indirect rendering pipeline in Vulkan: the CPU uploads a scene buffer of 10000 meshes, a compute shader culls and sorts by material, writes indirect draw commands, a second draw call renders everything.','C','A'],
+['What is a LOD (Level of Detail) system? Write a GPU-based LOD selector compute shader: for each object, compute screen-space projected area from the bounding sphere, select LOD index, write to an instance buffer.','C','A'],
+['What is a mesh caching / streaming system? How does Unreal Engine 5 s Nanite stream and cache meshlet clusters from disk to GPU VRAM on demand based on visibility?','T','A'],
+['Implement a material batching system: sort 10000 draw calls by material (pipeline state), merge instances with the same material into instanced draw calls, measure the CPU submit time reduction.','C','A'],
+['What is the difference between static and dynamic batching in a game engine? When does GPU instancing outperform both, and when does it fail (too many unique transforms)?','T','I'],
+['Write a double-buffered uniform buffer system for dynamic object transforms: two UBOs, each holding N mat4 transforms; CPU writes to UBO[currentFrame % 2] while GPU renders from the other.','C','I'],
+['What is a depth pre-pass? Write a Vulkan depth-only first pass that renders all opaque geometry writing only depth, then uses EARLY_FRAGMENT_TEST in the main pass to skip fragment shading for occluded pixels.','C','I'],
+['Write a GPU skinned mesh system: upload a bone matrix palette (512 bones) as a SSBO, compute skinned vertex positions in a compute shader, write to a vertex buffer for the draw pass.','C','A'],
+['Implement a frustum + occlusion culling pipeline in Vulkan compute: build a hierarchical Z-buffer (Hi-Z) from the depth pre-pass, test each bounding sphere in the compute shader, write surviving draw commands.','C','A'],
+['What is a bucket renderer? How does grouping draw calls into buckets by pipeline state, then submitting each bucket as a multi-draw indirect call, minimize pipeline state changes?','T','I'],
+['Write a Vulkan sparse binding for virtual texturing: reserve a large virtual VkImage address space, bind physical pages on demand as regions are needed by the renderer, and implement a page fault handler in a compute shader.','C','A'],
+['What is a decal system in a deferred renderer? Write a Vulkan pass that renders decal volumes (oriented boxes) as draw calls, reconstructs the world position from depth, and blends the decal into the G-buffer.','C','A'],
+['Implement a tiled resource streaming system: maintain a priority queue of texture tiles sorted by screen-space coverage, asynchronously upload high-priority tiles to GPU using Vulkan sparse binding.','C','A'],
+['What is a Vulkan render pass merge optimization? How does putting multiple passes into one VkRenderPass with subpasses allow the TBDR driver to keep tile memory hot across passes?','T','A'],
+['Write a frame pacing system: use Vulkan present ID extension and display timing to measure and compensate for frame timing jitter, targeting 16.67ms per frame.','C','A'],
+['What is a texture atlas? Implement a texture atlas packer: use a shelf-packing algorithm to arrange N textures of varying sizes into a single large atlas texture, output UV offsets and scales.','C','I'],
+['Design the rendering architecture for an open-world game with 10km draw distance, 1M triangle LOD terrain, 100K instanced foliage objects, and dynamic day/night cycle. Specify the culling, streaming, GI, and shadow strategy.','T','A']
+]},
+{id:'m25',phase:3,num:'25',icon:'🔊',title:'Audio & Compute DSP on GPU',desc:'GPU audio synthesis, FFT, convolution reverb, noise reduction, batch DSP, CUDA audio.',qs:[
+['What is GPU-accelerated FFT? Write a CUDA program using cuFFT to compute the forward FFT of a 1M-sample float signal and the inverse FFT to reconstruct it. Measure throughput vs FFTW on CPU.','C','I'],
+['Write a CUDA convolution reverb pipeline: compute FFT of the dry audio and the impulse response, multiply them element-wise in frequency domain (complex multiply), inverse FFT, and normalize.','C','A'],
+['Write an OpenCL kernel for real-time audio noise reduction: compute a short-time Fourier transform (STFT) per frame, estimate the noise floor from a 0.5s history, subtract it, inverse STFT.','C','A'],
+['What is a GPU waveform synthesizer? Write a CUDA kernel that generates 1024 audio samples per thread block: each thread computes one sample of a sine oscillator (frequency, amplitude, phase).','C','I'],
+['Write a GPU batch audio resampling kernel: given N audio buffers at 44.1kHz, resample each to 48kHz using linear interpolation. Process all N buffers in parallel across thread blocks.','C','A'],
+['What is the GPU advantage for audio DSP? For which workloads (batch processing, spectral analysis, many-channel mixing) does GPU outperform CPU, and for which (low-latency, single-buffer) does it not?','T','I'],
+['Write a CUDA spectrogram generator: compute STFT for a 1-minute audio file using overlapping windows, accumulate power spectrum, and output a 2D power heatmap (frequency vs time).','C','I'],
+['Write a Vulkan compute shader for a 512-point FFT: implement the Cooley-Tukey butterfly network in shared memory (half-precision complex numbers), process 64 transforms in parallel per dispatch.','C','A'],
+['What is GPU pitch shifting? Write a CUDA phase vocoder: analyze the phase difference between consecutive STFT frames, accumulate the true frequency, and resynthesize at a shifted pitch.','C','A'],
+['What is GPU audio latency? What is the minimum achievable latency for GPU audio processing (device roundtrip: ADC -> PCIe -> CUDA kernel -> PCIe -> DAC) and how does CUDA stream priority help?','T','A'],
+['Write a GPU multichannel room acoustics simulator: for a 64-speaker array, trace acoustic paths from source to each speaker using parallel ray casting in CUDA, apply reflection coefficients and delay.','C','A'],
+['Write a real-time GPU spectral subtraction noise gate: process a 10ms audio frame per kernel launch, compute the short-time spectral magnitude, gate bins below the threshold, and inverse transform.','C','A'],
+['What is a CUDA audio plugin? Write a minimal VST3 plugin stub that runs its DSP kernel on CUDA: convert the input buffer to a CUDA device buffer, process (apply a gain ramp), copy back.','C','A'],
+['Write a GPU MIDI synthesizer: represent 128 MIDI voices as CUDA threads, each generating its oscillator sample, mix all voices in a parallel reduction, and output the final audio buffer.','C','A'],
+['Write a GPU beat detection algorithm: compute the onset detection function (spectral flux) from an STFT, apply a moving average, and peak-pick in a CUDA kernel to output beat timestamps.','C','A'],
+['What is the ROCm rocFFT library? Write a HIP program using rocFFT to compute a 2D FFT of a 1024x1024 complex float array on an AMD GPU.','C','A'],
+['Write a GPU audio visualizer: compute a real-time FFT from the ALSA capture buffer, upload the magnitude spectrum to a Vulkan storage buffer, and render a bar chart using a geometry shader.','C','A'],
+['Write a CUDA speech enhancement pipeline: use a trained ONNX model (e.g., RNNoise), run inference with cuDNN, and apply the suppression mask to the STFT of the noisy input.','C','A'],
+['What is the cuSPARSE library and how can it accelerate spectral audio processing? Write a program using cuSPARSE for sparse matrix-vector multiply (filter bank application to an audio spectrum).','C','A'],
+['Design a GPU-accelerated live audio production pipeline: 96 input channels at 192kHz, apply per-channel EQ (GPU FFT filter bank), reverb send (GPU convolution), mix to stereo. Specify the CUDA streams, pinned memory, and target latency.','T','A']
+]},
+{id:'m26',phase:3,num:'26',icon:'🤖',title:'GPU AI Inference & TensorRT',desc:'TensorRT engine build, layer fusion, INT8/FP16 calibration, plugin API, multi-stream, Triton, batch inference.',qs:[
+['What is TensorRT? How does it optimize a deep learning model for inference: layer fusion, precision calibration, and kernel auto-tuning?','T','B'],
+['Write a TensorRT engine builder in C++: parse an ONNX model with nvonnxparser, create a builder, build the engine with FP16 enabled, serialize to a .plan file, and load it for inference.','C','I'],
+['What is INT8 calibration in TensorRT? Write a calibration data reader (IInt8EntropyCalibrator2) that feeds a set of representative images to compute per-layer activation scales.','C','A'],
+['Write a TensorRT inference session in C++: create an execution context, allocate CUDA buffers for input and output with cudaMalloc, copy input to device, enqueueV3, copy output back, print results.','C','I'],
+['What is layer fusion in TensorRT? Give 3 examples: Conv+BN+ReLU fused into one, GEMM+bias+gelu merged, and multi-head attention fused into a single cuBLAS call.','T','I'],
+['Write a TensorRT custom plugin in C++: implement an IPluginV2DynamicExt for a custom activation function (Swish = x*sigmoid(x)), register it with TensorRT, and use it in an ONNX model.','C','A'],
+['What is TensorRT dynamic shapes? Write code to create an optimization profile with min, opt, and max input shapes, enabling a single engine to handle variable batch sizes.','C','I'],
+['Write a multi-stream TensorRT inference program: create 2 CUDA streams and 2 execution contexts, interleave batches across streams, measure throughput vs single-stream.','C','A'],
+['What is Triton Inference Server? Write a Triton model config.pbtxt for a TensorRT model: specify max_batch_size, input/output tensors, and a dynamic batching policy.','C','I'],
+['Write a TensorRT inference benchmark: measure latency (single batch) and throughput (max sustained batch) for a ResNet-50 FP16 engine on a T4 GPU. Report GPU utilization.','C','I'],
+['What is NVIDIA DALI (Data Loading Library)? Write a DALI pipeline that loads JPEG images from disk, decodes them on the GPU, resizes to 224x224, and normalizes to [0,1].','C','A'],
+['Write a TensorRT INT8 quantization pipeline for a YOLOv8 model: generate calibration data from the COCO validation set, build an INT8 engine, evaluate mAP and compare to FP32.','C','A'],
+['What is the difference between TensorRT IBuilder and IBuilderConfig? How do you set memory pool limits, DLA (Deep Learning Accelerator) for Jetson, and the timing cache?','T','I'],
+['Write a TensorRT sparsity optimization program: prune a weight matrix to 2:4 structured sparsity, fine-tune the model, and build a TensorRT engine with sparsity enabled. Measure throughput vs dense.','C','A'],
+['What is cuBLAS? Write a C program that uses cublasGemmEx to compute a matrix multiply in FP16 with TF32 accumulation (COMPUTE_32F, CUDA_R_16F), and measure TFLOPS vs cuDNN.','C','A'],
+['Write a TensorRT Transformer engine program: use the Transformer Engine API to run an FP8 GEMM with automatic scaling, compute multi-head attention, and measure speedup on H100 vs A100.','C','A'],
+['What is KV cache quantization in LLM inference? How does TensorRT-LLM use INT8/INT4 KV cache to reduce memory bandwidth for autoregressive generation?','T','A'],
+['Write a TensorRT-LLM C++ inference loop for a GPT-2 model: tokenize input, run prefill phase, run autoregressive decode loop, detokenize output. Measure tokens/second.','C','A'],
+['What is continuous batching in LLM inference (Orca algorithm)? How does it interleave decode steps from multiple requests to maximize GPU utilization vs static batching?','T','A'],
+['Design a multi-model GPU inference service on 4 A100 GPUs: host ResNet-50, YOLOv8, GPT-2, and Stable Diffusion. Specify GPU partitioning (MIG or time-sharing), Triton routing, SLA per model, and fallback.','T','A']
+]},
+{id:'m27',phase:3,num:'27',icon:'🔬',title:'GPU Debugging & Error Handling',desc:'CUDA error checking, device lost, GPU hang recovery, valgrind CUDA, compute sanitizer, crash debugging.',qs:[
+['What is CUDA error handling? Write a macro CUDA_CHECK(call) that wraps every CUDA API call, catches non-SUCCESS return values, prints the error name and line number, and aborts.','C','B'],
+['What is the CUDA compute sanitizer? Write a script that runs your CUDA program under compute-sanitizer --tool memcheck to detect out-of-bounds accesses, uninitialized memory reads, and race conditions.','C','B'],
+['Write a CUDA kernel that deliberately triggers an out-of-bounds access (arr[threadIdx.x + 1024] where arr has only 512 elements). Run under compute-sanitizer to see the error report.','C','B'],
+['What is a CUDA race condition? Write a kernel where two threads write to the same global memory address without atomics. Run under compute-sanitizer --tool racecheck to detect it.','C','I'],
+['What is VK_ERROR_DEVICE_LOST in Vulkan? List the most common causes (out-of-memory, shader crash, timeout, GPU hang) and describe the debugging process: enable VK_EXT_device_fault, read the fault info.','T','I'],
+['Write a Vulkan GPU hang recovery handler: call vkDeviceWaitIdle with a timeout, detect VK_ERROR_DEVICE_LOST, destroy and recreate the Vulkan device, and reload all resources.','C','A'],
+['Write a CUDA kernel debug print program: use printf() inside a CUDA kernel to print thread index and a computed value. Explain the ordering behavior and buffer flushing.','C','B'],
+['What is CUDA Unified Memory debugging? Write a program that triggers a CPU-GPU concurrent access race on a cudaMallocManaged pointer (no cudaMemPrefetchAsync). Use compute-sanitizer to detect it.','C','I'],
+['Write a Vulkan validation layer suppression config: define a VkDebugUtilsMessengerCreateInfoEXT callback that filters specific message IDs (known false positives) while printing all others.','C','I'],
+['What is CUDA Compute Debugger (cuda-gdb)? Write a debugging session transcript: set a breakpoint at a kernel entry, print threadIdx.x and a local variable, step through the kernel.','C','A'],
+['Write a GPU memory leak detector for Vulkan: override the VkAllocationCallbacks to track every CPU allocation and deallocation, and assert that all are freed at program exit.','C','I'],
+['What is a GPU TDR (Timeout Detection and Recovery) on Windows? How does the OS detect a GPU hang after 2 seconds and reset the driver, and how can your application recover?','T','I'],
+['Write a RenderDoc capture automation script: use the RenderDoc in-application API (RENDERDOC_GetAPI) to automatically capture a frame whenever a GPU timer query exceeds 33ms (dropped frame detection).','C','A'],
+['What is the NVIDIA debugger extension VK_NV_device_diagnostic_checkpoints? Write code to insert diagnostic string markers into a command buffer and read back the last checkpoint after VK_ERROR_DEVICE_LOST.','C','A'],
+['Write a CUDA assertion kernel: use assert(condition) inside a CUDA kernel to verify invariants. Run under compute-sanitizer to catch assertion failures and identify the thread that triggered them.','C','B'],
+['What is CUDA kernel profiling with nsys? Write a program using nvtxRangePush/nvtxRangePop to annotate kernel launches and host code sections, then view the timeline in Nsight Systems.','C','I'],
+['Write a GLSL shader debugging tool using conditional rendering: output debug values as screen-space color (fract(value) mapped to hue) by pressing a hotkey, controlled by a uniform.','C','I'],
+['What is the AMD ROCm ASAN (Address Sanitizer)? How does it detect GPU out-of-bounds and use-after-free in HIP kernels, similar to CUDA compute-sanitizer memcheck?','T','I'],
+['Write a GPU fence-per-drawcall debugging pass: insert a Vulkan query after every draw call, wait for it on the CPU after the frame, and identify which draw call caused a timeout.','C','A'],
+['Design a GPU debugging workflow for a production GPU crash in a deployed application: describe how to enable crash dumps, use the crash dump analyzer, symbolize the GPU crash address, and isolate the offending shader.','T','A']
+]},
+{id:'m28',phase:3,num:'28',icon:'⚡',title:'GPU Power & Thermal Management',desc:'Power states, DVFS, thermal throttling, power caps, power efficiency, Nsight power, perf/watt optimization.',qs:[
+['What are GPU performance states (P-states)? How does the GPU DVFS system reduce frequency and voltage under low load and ramp up under sustained compute?','T','B'],
+['Write an NVIDIA GPU power monitoring program using NVML: poll power draw (nvmlDeviceGetPowerUsage), temperature (nvmlDeviceGetTemperature), clock frequency (nvmlDeviceGetClockInfo), and memory bandwidth at 1Hz.','C','B'],
+['What is GPU thermal throttling? At what temperature does an NVIDIA GPU begin reducing clock speed and how does the GPU firmware manage this? Use nvidia-smi dmon to observe it.','T','I'],
+['Write a CUDA power efficiency benchmark: measure GFLOPS/W for a dense matrix multiply at full precision (FP32), half precision (FP16), and INT8. Use NVML for power, cuda::timer for compute time.','C','I'],
+['What is the NVIDIA power cap API? Write code using nvmlDeviceSetPowerManagementLimit to reduce the GPU power cap to 70% and measure the resulting performance and frequency reduction.','C','I'],
+['What is GPU memory clock vs compute clock? How does reducing the memory clock (nvidia-smi -ac) affect bandwidth-bound vs compute-bound workloads differently?','T','I'],
+['Write a sustained workload power test: run a compute-heavy CUDA kernel for 10 minutes, record temperature, power, and frequency every second, and plot the thermal throttling onset and steady-state power.','C','I'],
+['What is the GPU idle power state? Write a benchmark that measures the power draw of a GPU in P8 (idle), P2 (memory access only), and P0 (full compute). Compare with and without display driving.','C','I'],
+['Write a GPU power optimization for a mobile game: use Vulkan VK_EXT_headless_surface to render at 30fps instead of 60fps during background, trigger the power state transition using ANativeWindow_setFrameRate.','C','A'],
+['What is CUDA Occupancy-based block size tuning? Write a script using cudaOccupancyMaxPotentialBlockSize to find the block size that maximizes occupancy for a given kernel, then measure if it also maximizes performance.','C','I'],
+['Write a GPU energy-to-solution benchmark: measure total energy (in joules) consumed by a ResNet-50 inference run on an A100 vs an RTX 4090 vs a Jetson Orin. Compare TOPS/W.','C','A'],
+['What is the NVIDIA Grace Hopper Superchip? How does it combine a 72-core ARM CPU and an H100 GPU on the same die with NVLink-C2C (chip-to-chip) at 900 GB/s bandwidth?','T','A'],
+['Write a CUDA cooperative groups power monitoring example: use a persistent thread grid (cooperative groups grid sync) and a background CPU thread to poll NVML power every millisecond during the run.','C','A'],
+['What is AMD PowerPlay? How does the AMDGPU driver implement DVFS on Radeon RX 7900 series and how do you read current power state from /sys/class/drm/card0/device/pp_od_clk_voltage?','T','A'],
+['Write a power-aware GPU kernel scheduler: given 3 CUDA kernels with known compute and memory intensity, schedule them to avoid power spikes (stagger the launches by 1ms) and measure peak power vs simultaneous launch.','C','A'],
+['What is the relationship between GPU memory bandwidth and power? Write a CUDA bandwidth benchmark at varying stream counts, measure power per GB/s transferred, and find the bandwidth-per-watt sweet spot.','C','I'],
+['Write a TensorRT power-aware inference benchmark: run a batch of 64 images at FP16, measure energy (NVML), then at INT8, and compute accuracy vs energy trade-off.','C','A'],
+['What is Nvidia s Multi-Process Service (MPS)? How does it allow multiple CUDA processes to share the GPU without full context switching, reducing idle power between processes?','T','A'],
+['Write an automated GPU power regression test: before and after a code change, run 3 representative workloads, measure energy consumption with NVML, and flag if any increases by more than 5%.','C','A'],
+['Design a GPU power management policy for a battery-powered autonomous robot (NVIDIA Jetson AGX Orin): specify P-states for each mode (idle, mapping, obstacle avoidance, emergency stop). Budget 15W total for GPU.','T','A']
+]},
+{id:'m29',phase:3,num:'29',icon:'🌊',title:'Fluid Simulation & GPU Physics',desc:'SPH, position-based dynamics, GPU rigid body, fluid simulation, particle systems, compute-based physics.',qs:[
+['What is SPH (Smoothed Particle Hydrodynamics)? Write a CUDA SPH kernel that computes density for each particle by summing contributions from neighbors using a spatial hash grid.','C','A'],
+['Write a GPU spatial hash grid builder in CUDA: hash each particle s position to a cell index, use counting sort to build the cell-sorted particle array and cell-start/end arrays.','C','A'],
+['Write a CUDA SPH pressure force kernel: for each particle, sum the pressure gradient from neighbors (using the SPH pressure formula), integrate velocity and position with symplectic Euler.','C','A'],
+['What is Position-Based Dynamics (PBD)? Write a CUDA kernel that enforces distance constraints for a 2D cloth mesh: project each constraint to reduce the distance error between two particles.','C','A'],
+['Write a CUDA GPU rigid body simulation: each thread group simulates one rigid body, computes net force and torque from a list of contact points, integrates the state (position, quaternion, linear/angular velocity).','C','A'],
+['Write a Vulkan compute-based fluid simulation: store fluid state (velocity, pressure) in 2D textures, implement the Navier-Stokes advection-projection scheme using ping-pong double buffering.','C','A'],
+['Write a CUDA GPU constraint solver for a ragdoll: maintain a list of joint constraints (hinge, ball-socket), run 10 Gauss-Seidel iterations per frame to satisfy all constraints simultaneously.','C','A'],
+['What is CUDA particle sorting for GPU physics? Write a radix sort of 1M particles by their 3D spatial grid index, and then verify the sort is stable by checking neighbor consistency.','C','A'],
+['Write a GPU fluid surface reconstruction (Marching Cubes): for each voxel of a SPH simulation domain, evaluate the density field from nearby particles, run the MC algorithm in a compute shader, output a triangle mesh.','C','A'],
+['Write a GPU cloth simulation in Vulkan: particles connected by structural, shear, and bend springs, integration in a compute shader, constraint relaxation, and collision with a sphere.','C','A'],
+['What is FleX (NVIDIA Flex)? How does it use unified particle simulation on GPU to simulate fluids, rigid bodies, cloth, and soft bodies in a single framework with unified collision detection?','T','A'],
+['Write a CUDA BVH traversal kernel for GPU collision detection: given N rigid body AABBs per frame, find all overlapping pairs using a parallel BVH traversal.','C','A'],
+['Write a GPU smoke simulation using voxel-based Navier-Stokes: allocate 3D velocity and density textures, implement advection, divergence, pressure solve (Jacobi iteration), and curl noise to drive turbulence.','C','A'],
+['Write a CUDA wave simulation: model a 1024x1024 ocean surface using the Fast Fourier Transform ocean model (sum of Gerstner waves per frequency bin). Render with Vulkan displacement mapping.','C','A'],
+['What is GPU-accelerated broad phase collision detection? Write a CUDA sweep-and-prune algorithm: sort AABBs on the X axis per frame, find overlapping intervals in parallel.','C','A'],
+['Write a GPU sand simulation using a cellular automata model in a Vulkan compute shader: each voxel checks below and diagonally below for empty space and falls, simulating granular flow.','C','I'],
+['What is a CUDA Thrust sort for physics? Write a program using thrust::sort_by_key to sort a particle array by their 3D spatial hash key, ready for neighbor search.','C','I'],
+['Write a GPU hair simulation: model each hair strand as a chain of PBD distance + angle constraints, simulate 1000 strands simultaneously in CUDA with 50ms constraint solve budget.','C','A'],
+['Write a CUDA elasticity solver for a soft body: represent the body as a tetrahedral mesh, compute elastic forces using the Green strain tensor, and integrate with implicit Euler.','C','A'],
+['Design a GPU physics engine architecture for a real-time game: specify the compute passes (broad phase, narrow phase, constraint solve, integration, surface reconstruction), the data layout, and how to budget GPU time per frame.','T','A']
+]},
+{id:'m30',phase:3,num:'30',icon:'🏆',title:'GPU Mastery — System Design & Interview Prep',desc:'GPU system design, cross-cutting questions, GPU interview prep (NVIDIA/AMD/Apple), architecture decisions.',qs:[
+['Explain how you would implement a shadow map system for a scene with 1000 dynamic lights. What techniques reduce the cost: cached shadow maps, shadow atlases, ray traced shadows?','T','A'],
+['You are asked to optimize a Vulkan renderer that is CPU-bound (GPU is 30% utilized). List 5 techniques to reduce CPU overhead: MDI, render graph batching, reduced PSO changes, persistent command buffers, async command building.','T','A'],
+['Design a GPU-accelerated autonomous vehicle perception pipeline: camera decode (NVDEC), lane detection (TensorRT), object detection (YOLO INT8), fusion with LiDAR on GPU, and visualization. Specify throughput and latency budget.','T','A'],
+['A game stutters every 3 seconds with a 100ms frame. Describe your profiling methodology: Nsight Systems timeline, GPU-CPU sync points, shader recompilation, VRAM eviction, and audio hitches.','T','A'],
+['Compare OpenGL, Vulkan, DirectX 12, Metal, and WebGPU on 4 axes: API verbosity, driver overhead, cross-platform support, and suitability for each target platform.','T','A'],
+['How would you render 10 million blades of grass at 60fps? Describe: meshlet-based rendering, GPU culling compute shader, LOD selection, animation in vertex shader, and billboard fallback.','T','A'],
+['Design a real-time global illumination system for a AAA console game: compare DDGI (dynamic diffuse GI with probes), Lumen, SVOGI, and screen-space GI. Specify which to use and why.','T','A'],
+['A CUDA kernel has 42% occupancy and is 60% memory-bound. Walk through your optimization: check roofline, reduce register pressure, use __ldg, restructure access for coalescing, prefetch with async copy.','T','A'],
+['Explain the Vulkan render graph to a junior developer: why you need it, how it tracks resource states, how it inserts barriers, and what benefit it gives over manual synchronization.','T','I'],
+['Design a multi-tenant GPU inference service supporting LLM workloads (GPT-4 scale) and vision models simultaneously: specify MIG partitioning, model parallelism (tensor parallel, pipeline parallel), batching strategy.','T','A'],
+['How does a mobile GPU (Mali-G715) differ from a desktop GPU (NVIDIA RTX 4090) in terms of rendering pipeline? How does this change your approach to deferred shading, shadow maps, and post-processing?','T','I'],
+['Walk through the Vulkan frame render loop for a physically-based renderer: enumerate all command buffer recordings, synchronization points, queue submissions, and present operations.','T','I'],
+['An OpenGL compute shader runs 3x slower than expected. Walk through your analysis: check work group size vs SM warp size, shared memory usage, L1/L2 miss rate, and atomic contention.','T','I'],
+['How would you implement real-time order-independent transparency (OIT) in Vulkan? Compare: per-pixel linked lists, moment-based OIT, weighted blended OIT. Specify memory cost and quality.','T','A'],
+['Design the display stack for a safety-critical automotive HMI: GPU -> Vulkan rendering -> DRM/KMS -> LVDS panel, with a hardware watchdog that displays a fallback bitmap if the GPU hangs.','T','A'],
+['Compare CUDA, OpenCL, Vulkan Compute, and SYCL for a new GPU compute library targeting both NVIDIA and AMD GPUs. Consider: ecosystem, performance, debuggability, and long-term support.','T','A'],
+['A Vulkan application crashes with VK_ERROR_DEVICE_LOST after 30 minutes of runtime. Describe your investigation: enable VK_EXT_device_fault, add checkpoint markers, reproduce with driver debug mode, analyze the fault info.','T','A'],
+['How would you implement a GPU-accelerated video streaming player: decode (NVDEC), color conversion (CUDA), HDR tone mapping (compute shader), display (DRM/KMS page flip). Budget 16ms per frame.','T','A'],
+['Walk through the GPU hardware path for a shadow map lookup in a fragment shader: texture fetch, L1 miss, L2 miss, DRAM access, PCF filter, final result. Estimate cycle count on an Ampere GPU.','T','A'],
+['You have 5 minutes to explain GPU programming to a C developer who has never written a shader. Cover: why GPUs are fast, SIMT execution, memory hierarchy, a hello world GLSL fragment shader, and one performance pitfall.','T','B']
+]},
+];
+
+const SKEY = 'gpu_mastery_v1';
+const GH_REPO = 'Srivathsan98/GPU-Mastery';
+
+const ST={};
+try{Object.assign(ST,JSON.parse(localStorage.getItem(SKEY)||'{}'));}catch(e){}
+function save(){try{localStorage.setItem(SKEY,JSON.stringify(ST));}catch(e){}}
+function k(mid,qi){return mid+'_'+qi;}
+function isChecked(mid,qi){return!!ST[k(mid,qi)];}
+function toggle(mid,qi){ST[k(mid,qi)]=!ST[k(mid,qi)];save();refreshAll(mid,qi);}
+function saveIssue(mid,qi,val){
+  const ik='iss_'+mid+'_'+qi;
+  if(val.trim()){ST[ik]=val.trim();}else{delete ST[ik];}
+  save();
+  const link=document.getElementById('issl-'+mid+'-'+qi);
+  if(link){if(val.trim()){link.href='https://github.com/'+GH_REPO+'/issues/'+val.trim();link.className='issue-open active';}else{link.href='#';link.className='issue-open';}}
+}
+function modStats(m){let d=0;m.qs.forEach((_,i)=>{if(isChecked(m.id,i))d++;});return{done:d,total:m.qs.length};}
+function allStats(){let d=0,t=0,md=0;MODULES.forEach(m=>{const s=modStats(m);d+=s.done;t+=s.total;if(s.done===s.total&&s.total>0)md++;});return{done:d,total:t,modsDone:md};}
+function refreshAll(mid,qi){
+  const row=document.getElementById('row-'+mid+'-'+qi);
+  if(row){const c=isChecked(mid,qi);row.className=c?'checked':'';const cc=row.querySelector('.cb-check');if(cc)cc.style.display=c?'block':'none';}
+  const m=MODULES.find(x=>x.id===mid);
+  const s=modStats(m);const pct=s.total?Math.round(s.done/s.total*100):0;
+  const fill=document.getElementById('mfill-'+mid);if(fill)fill.style.width=pct+'%';
+  const cnt=document.getElementById('mcnt-'+mid);if(cnt)cnt.textContent=s.done+'/'+s.total;
+  const badge=document.getElementById('mbadge-'+mid);
+  if(badge){if(pct===0){badge.className='mod-badge badge-ns';badge.textContent='Not started';}else if(pct<100){badge.className='mod-badge badge-ip';badge.textContent=pct+'% done';}else{badge.className='mod-badge badge-done';badge.textContent='Mastered \u2713';}}
+  const ms=document.getElementById('ms-pct-'+mid);if(ms)ms.textContent=pct+'%';
+  const mpf=document.getElementById('ms-fill-'+mid);if(mpf)mpf.style.width=pct+'%';
+  const as=allStats();const ap=as.total?Math.round(as.done/as.total*100):0;
+  document.getElementById('done-count').textContent=as.done;
+  document.getElementById('total-count').textContent=as.total;
+  document.getElementById('pct-label').textContent=ap+'%';
+  document.getElementById('mod-done').textContent=as.modsDone;
+  document.getElementById('overall-fill').style.width=ap+'%';
+  const btn=document.getElementById('nav-'+mid);
+  if(btn)btn.className='mod-btn'+(pct===100?' done':pct>0?' partial':'');
+}
+let curPhase=0;
+function filterPhase(p){
+  curPhase=p;
+  document.querySelectorAll('.phase-btn').forEach((b,i)=>b.className='phase-btn'+(i===p?' active':''));
+  renderContent();
+}
+function renderModNav(){
+  const as=allStats();document.getElementById('s-total').textContent=as.total;
+  let h='';
+  MODULES.forEach(m=>{const s=modStats(m);const p=s.total?Math.round(s.done/s.total*100):0;
+    h+=`<button id="nav-${m.id}" class="mod-btn${p===100?' done':p>0?' partial':''}" onclick="jumpToModule('${m.id}')">${m.num}</button>`;
+  });
+  document.getElementById('mod-nav').innerHTML=h;
+}
+function jumpToModule(id){const el=document.getElementById('card-'+id);if(el){el.scrollIntoView({behavior:'smooth',block:'start'});if(!el.classList.contains('open'))el.classList.add('open');}}
+function toggleModule(id){document.getElementById('card-'+id).classList.toggle('open');}
+function renderContent(){
+  const phases=curPhase===0?[1,2,3]:[curPhase];
+  const pl={1:'Phase 01 \u00b7 GPU Architecture & OpenGL',2:'Phase 02 \u00b7 Vulkan, OpenCL & Shaders',3:'Phase 03 \u00b7 Advanced Compute & Real-Time Rendering'};
+  const TM={'T':'theory','C':'code','D':'debug'};
+  const TC={'T':'tag-theory','C':'tag-code','D':'tag-debug'};
+  const DM={'B':'Beginner','I':'Intermediate','A':'Advanced'};
+  const DC={'B':'diff-B','I':'diff-I','A':'diff-A'};
+  let h='';
+  phases.forEach(ph=>{
+    const mods=MODULES.filter(m=>m.phase===ph);
+    h+=`<div class="phase-header">${pl[ph]} \u2014 ${mods.length} modules</div>`;
+    mods.forEach(m=>{
+      const s=modStats(m);const pct=s.total?Math.round(s.done/s.total*100):0;
+      let bc='mod-badge badge-ns',bt='Not started';
+      if(pct>0&&pct<100){bc='mod-badge badge-ip';bt=pct+'% done';}else if(pct===100){bc='mod-badge badge-done';bt='Mastered \u2713';}
+      h+=`<div class="module" id="card-${m.id}"><div class="module-head" onclick="toggleModule('${m.id}')"><div class="module-num">${m.num}</div><div class="module-icon">${m.icon}</div><div class="module-info"><div class="module-title">${m.title}</div><div class="module-desc">${m.desc}</div></div><div class="module-right"><div class="mod-count" id="mcnt-${m.id}">${s.done}/${s.total}</div><div class="${bc}" id="mbadge-${m.id}">${bt}</div></div><div class="module-chevron">&#9654;</div></div><div class="mod-bar"><div class="mod-bar-fill" id="mfill-${m.id}" style="width:${pct}%"></div></div><div class="module-body"><div class="mod-stats"><div class="ms">Done: <span>${s.done}</span>/${s.total}</div><div class="ms">Progress: <span id="ms-pct-${m.id}">${pct}%</span></div><div class="mod-prog-bar"><div class="mod-prog-fill" id="ms-fill-${m.id}" style="width:${pct}%"></div></div></div><div class="q-table-wrap"><table><thead><tr><th></th><th>#</th><th>Question</th><th>Type</th><th>Difficulty</th><th>GitHub</th></tr></thead><tbody>`;
+      m.qs.forEach((q,qi)=>{
+        const c=isChecked(m.id,qi);const issVal=ST['iss_'+m.id+'_'+qi]||'';
+        const typ=q[1]||'T',diff=q[2]||'I';
+        const qtext=q[0].replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        h+=`<tr id="row-${m.id}-${qi}" class="${c?'checked':''}" onclick="toggle('${m.id}',${qi})"><td><div class="cb"><span class="cb-check" style="display:${c?'block':'none'}">&#10003;</span></div></td><td class="q-num">${qi+1}</td><td class="q-text">${qtext}</td><td><span class="tag ${TC[typ]}">${TM[typ]}</span></td><td><span class="diff ${DC[diff]}">${DM[diff]}</span></td><td class="issue-cell" onclick="event.stopPropagation()"><input class="issue-input" id="iss-${m.id}-${qi}" type="text" placeholder="#" value="${issVal}" onchange="saveIssue('${m.id}',${qi},this.value)" /><a class="issue-open${issVal?' active':''}" id="issl-${m.id}-${qi}" href="${issVal?'https://github.com/'+GH_REPO+'/issues/'+issVal:'#'}" target="_blank">${issVal?'#'+issVal:'--'}</a></td></tr>`;
+      });
+      h+=`</tbody></table></div></div></div>`;
+    });
+  });
+  document.getElementById('content').innerHTML=h;
+}
+renderModNav();renderContent();
+const _as=allStats();const _ap=_as.total?Math.round(_as.done/_as.total*100):0;
+document.getElementById('done-count').textContent=_as.done;
+document.getElementById('total-count').textContent=_as.total;
+document.getElementById('pct-label').textContent=_ap+'%';
+document.getElementById('mod-done').textContent=_as.modsDone;
+document.getElementById('overall-fill').style.width=_ap+'%';
+</script>
+</body>
+</html>
